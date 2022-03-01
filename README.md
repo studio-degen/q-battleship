@@ -1,2 +1,2 @@
 # q-battleship
-A quantum battleship game
+quantum battleship
