@@ -1,0 +1,339 @@
+:root {
+  --bgLight: #81c2ff;
+  --bgMed: #1f26b4;
+  --bgDark: #060841;
+  --destroyer: #00abe9;
+  --submarine: #3e509c;
+  --cruise: #81589d;
+  --battleship: #b65899;
+  --carrier: #dd8db5;
+  --leftMargin: 60px;
+}
+body {
+  font-family: Poppins, sans-serif;
+  background-color: #81c2ff;
+  color: #1f26b4;
+}
+button {
+  background-color: var(--bgMed);
+  border-radius: 4px;
+  display: inline-block;
+  cursor: pointer;
+  color: var(--bgLight);
+  font-size: 12px;
+  padding: 7px 12px;
+  text-decoration: none;
+  border: none;
+}
+button:hover {
+  background-color: var(--bgDark);
+}
+
+select {
+  background-color: var(--bgMed);
+  border-radius: 4px;
+  display: inline-block;
+  cursor: pointer;
+  color: var(--bgLight);
+  font-size: 12px;
+  padding: 7px 12px;
+  text-decoration: none;
+  border: none;
+}
+
+h1 {
+  text-align: center;
+}
+.container {
+  display: flex;
+}
+.mainWrapper {
+  margin: auto;
+  width: fit-content;
+}
+
+.grid-p1 {
+  width: 640px;
+  height: 640px;
+  display: flex;
+  flex-wrap: wrap;
+  /* background-color: blue; */
+  background-image: url(./assets/ocean.jpg);
+  margin-left: var(--leftMargin);
+  margin: 20px;
+}
+
+.grid div {
+  width: 40px;
+  height: 40px;
+}
+
+.grid-p2 {
+  width: 640px;
+  height: 640px;
+  display: flex;
+  flex-wrap: wrap;
+  /* background-color: blue; */
+  background-image: url(./assets/ocean.jpg);
+  margin: 20px;
+}
+.hidden-info {
+  margin: 20px;
+}
+.instructions {
+  margin: 20px;
+}
+.p1-grid-display {
+  width: 640px;
+  height: auto;
+  margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  /* background-color: yellow; */
+}
+
+.p2-grid-display {
+  width: 640px;
+  height: auto;
+  margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  /* background-color: yellow; */
+}
+
+.p1-destroyer-container {
+  width: 80px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--destroyer);
+  margin: 10px;
+  display: flex;
+}
+.p1-destroyer-container-vertical {
+  width: 40px;
+  height: 80px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--destroyer);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p1-submarine-container {
+  width: 120px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+  margin: 10px;
+  display: flex;
+}
+
+.p1-submarine-container-vertical {
+  width: 40px;
+  height: 120px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p1-cruiser-container {
+  width: 120px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--cruise);
+  margin: 10px;
+  display: flex;
+}
+
+.p1-cruiser-container-vertical {
+  width: 40px;
+  height: 120px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p1-battleship-container {
+  width: 160px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--battleship);
+  margin: 10px;
+  display: flex;
+}
+
+.p1-battleship-container-vertical {
+  width: 40px;
+  height: 160px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--battleship);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p1-carrier-container {
+  width: 200px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--carrier);
+  margin: 10px;
+  display: flex;
+}
+
+.p1-carrier-container-vertical {
+  width: 40px;
+  height: 200px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--carrier);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p2-destroyer-container {
+  width: 80px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--destroyer);
+  margin: 10px;
+  display: flex;
+}
+.p2-destroyer-container-vertical {
+  width: 40px;
+  height: 80px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--destroyer);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p2-submarine-container {
+  width: 120px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+  margin: 10px;
+  display: flex;
+}
+
+.p2-submarine-container-vertical {
+  width: 40px;
+  height: 120px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p2-cruiser-container {
+  width: 120px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--cruise);
+  margin: 10px;
+  display: flex;
+}
+
+.p2-cruiser-container-vertical {
+  width: 40px;
+  height: 120px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--cruise);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p2-battleship-container {
+  width: 160px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--battleship);
+  margin: 10px;
+  display: flex;
+}
+
+.p2-battleship-container-vertical {
+  width: 40px;
+  height: 160px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--battleship);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.p2-carrier-container {
+  width: 200px;
+  height: 40px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--carrier);
+  margin: 10px;
+  display: flex;
+}
+
+.p2-carrier-container-vertical {
+  width: 40px;
+  height: 200px;
+  background-image: url(./assets/boat.png);
+  background-color: var(--carrier);
+  margin: 10px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.ship div {
+  width: 40px;
+  height: 40px;
+}
+
+.destroyer {
+  background-image: url(./assets/boat.png);
+  background-color: var(--destroyer);
+}
+
+.submarine {
+  background-image: url(./assets/boat.png);
+  background-color: var(--submarine);
+}
+
+.cruiser {
+  background-image: url(./assets/boat.png);
+  background-color: var(--cruise);
+}
+
+.battleship {
+  background-image: url(./assets/boat.png);
+  background-color: var(--battleship);
+}
+
+.carrier {
+  background-image: url(./assets/boat.png);
+  background-color: var(--carrier);
+}
+.entangled {
+  /* background-color: grey; */
+  background-image: url(./assets/anchor2.png);
+}
+.hide {
+  background-image: url(./assets/ocean.jpg);
+}
+.boom {
+  z-index: 3;
+  /* background-color: red; */
+  background-image: url(./assets/boom_target.jpg);
+}
+
+.miss {
+  /* background-color: black; */
+  background-image: url(./assets/miss_ocean.jpg);
+}
