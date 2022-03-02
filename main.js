@@ -86,13 +86,6 @@ function setup(client, room, shared, my, participants) {
   //   console.log(shared);
   // }, 1000);
 
-
-  // chooseTeam.addEventListener('change',() => {
-  //   //console.log(chooseTeam.value);
-  //   my.selectedTeam = chooseTeam.value;
-  //   console.log(shared, my);
-  // });
-
   let totalShipCount = 2; //CHANGE TO 10 IN THE END
   const width = 16; //number of cells 
 
@@ -103,7 +96,7 @@ function setup(client, room, shared, my, participants) {
       if(pname == 'p1'){
         square.dataset.id = i;
       }else if(pname == 'p2'){
-        square.dataset.id = width*width - 1 + i;
+        square.dataset.id = width*width + i;
       }  
       grid.appendChild(square);
       squares.push(square);
@@ -138,7 +131,7 @@ function setup(client, room, shared, my, participants) {
       battleship2.classList.toggle('p2-battleship-container-vertical');
       carrier2.classList.toggle('p2-carrier-container-vertical');
       isHorizontal = false;
-      console.log(isHorizontal);
+      //console.log(isHorizontal);
       return;
     }
     if (!isHorizontal) {
@@ -153,7 +146,7 @@ function setup(client, room, shared, my, participants) {
       battleship2.classList.toggle('p2-battleship-container-vertical');
       carrier2.classList.toggle('p2-carrier-container-vertical');
       isHorizontal = true;
-      console.log(isHorizontal);
+      //console.log(isHorizontal);
       return;
     }
   }
@@ -170,6 +163,7 @@ function setup(client, room, shared, my, participants) {
 
 
 
+  //console.log(p2Squares);
   let selectedShipNameWithIndex;
   let draggedShip;
   let draggedShipLength;
@@ -197,7 +191,7 @@ function setup(client, room, shared, my, participants) {
   function dragStart() {
       draggedShip = this;
       draggedShipLength = this.childNodes.length;
-      console.log(shared);
+      //console.log(shared);
   }
 
   function dragOver(e) {
@@ -212,11 +206,48 @@ function setup(client, room, shared, my, participants) {
       //console.log('drag leave');
   }
 
+  function calculateHoriBounds(dist, player){
+    let bounds = [];
+    if(player == 'p1') {
+      for (let b = 0; b < dist; b++) {
+        for (let i = 15 - b; i < 256; i+=16) {
+          bounds.push(i);
+        }
+      }
+    }else if(player == 'p2'){
+      for (let b = 0; b < dist; b++) {
+        for (let i = 271 - b; i < 512; i+=16) {
+          bounds.push(i);
+        }
+      }
+    }
+
+    return bounds;
+  }
+
+  function calculateVertBounds(dist, player){
+    let bounds = [];
+    if(player == 'p1') {
+      for (let i = 255; i > (255 - (16 * dist)); i--) {
+        bounds.push(i);
+      }
+    }else if(player == 'p2'){
+      for (let i = 511; i > (511 - (16 * dist)); i--) {
+        bounds.push(i);
+      }
+    }
+    return bounds;
+  }
+
   function p1DragDrop() {
+          //console.log(calculateVertBounds(3));
           //console.log($(this).attr("data-pname"), isHorizontal);
           let shipNameWithLastId = draggedShip.lastChild.id;
           let shipClass = shipNameWithLastId.slice(0, -2);
           //console.log(shipClass);
+          let horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
+          let vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')]
+          let boundHit = false;
 
           //console.log(this == document.querySelector(`[data-id='${parseInt($(this).attr("data-id"))}']`));
           //this.append(draggedShip);
@@ -226,23 +257,87 @@ function setup(client, room, shared, my, participants) {
           let tempPlaces = [];
           let place;
           if(isHorizontal){
-          for (let i = 0; i < draggedShipLength; i++) {
-              temp = parseInt($(this).attr("data-id")) + i;
-              //console.log(temp);
-              place = document.querySelector(`[data-id='${temp}']`);
-              shipPlaces.push(place);
-              tempPlaces.push(temp);
-              numberOfShipsDropped++;
-          }
+            for (let i = 0; i < draggedShipLength; i++) {
+                temp = parseInt($(this).attr("data-id")) + i;
+                //console.log(temp);
+
+                if(i == 0) {
+                  if(shipClass == 'destroyer') {
+                    horiBounds[0].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                    horiBounds[1].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'battleship') {
+                    horiBounds[2].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    horiBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }
+                  
+                }
+
+                if(!boundHit){
+                  place = document.querySelector(`[data-id='${temp}']`);
+                  shipPlaces.push(place);
+                  tempPlaces.push(temp);
+                  numberOfShipsDropped++;
+                }
+            }
           }else if(!isHorizontal){
-          for (let i = 0; i < draggedShipLength; i++) {
-              temp = parseInt($(this).attr("data-id")) + (16 * i);
-              //console.log(temp);
-              place = document.querySelector(`[data-id='${temp}']`);
-              shipPlaces.push(place);
-              tempPlaces.push(temp);
-              numberOfShipsDropped++;
-          }
+            for (let i = 0; i < draggedShipLength; i++) {
+                temp = parseInt($(this).attr("data-id")) + (16 * i);
+                //console.log(temp);
+
+                if(i == 0) {
+                  if(shipClass == 'destroyer') {
+                    vertBounds[0].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                    vertBounds[1].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'battleship') {
+                    vertBounds[2].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    vertBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }
+                  
+                }
+
+                if(!boundHit){
+                  place = document.querySelector(`[data-id='${temp}']`);
+                  shipPlaces.push(place);
+                  tempPlaces.push(temp);
+                  numberOfShipsDropped++;
+                }
+            }
           }
           
           //console.log(shipPlaces);
@@ -250,42 +345,51 @@ function setup(client, room, shared, my, participants) {
           shipPlaces[p].classList.add('taken', shipClass); 
           }
 
-          let classes = $(draggedShip).attr('class').split(/\s+/);
-          if(classes[1] == 'p1-destroyer-container') {
-          shared.p1placed[0] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p1ShipsPos[0].push(tempPlaces[j]);
-          }
-          //console.log(shared, participants);
-          } else if(classes[1] == 'p1-submarine-container') {
-          shared.p1placed[1] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p1ShipsPos[1].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p1-cruiser-container') {
-          shared.p1placed[2] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p1ShipsPos[2].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p1-battleship-container') {
-          shared.p1placed[3] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p1ShipsPos[3].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p1-carrier-container') {
-          shared.p1placed[4] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p1ShipsPos[4].push(tempPlaces[j]);
-          }
+          if(!boundHit){
+            let classes = $(draggedShip).attr('class').split(/\s+/);
+            if(classes[1] == 'p1-destroyer-container') {
+            shared.p1placed[0] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p1ShipsPos[0].push(tempPlaces[j]);
+            }
+            //console.log(shared, participants);
+            } else if(classes[1] == 'p1-submarine-container') {
+            shared.p1placed[1] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p1ShipsPos[1].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p1-cruiser-container') {
+            shared.p1placed[2] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p1ShipsPos[2].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p1-battleship-container') {
+            shared.p1placed[3] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p1ShipsPos[3].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p1-carrier-container') {
+            shared.p1placed[4] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p1ShipsPos[4].push(tempPlaces[j]);
+            }
+            }
+            
+            displayGrid1.removeChild(draggedShip);
           }
           //console.log(shared);
-          displayGrid1.removeChild(draggedShip);
+
   }
 
   function p2DragDrop() {
           //console.log($(this).attr("data-id"), isHorizontal);
           let shipNameWithLastId = draggedShip.lastChild.id;
           let shipClass = shipNameWithLastId.slice(0, -2);
+
+          let horiBounds = [calculateHoriBounds(1, 'p2'), calculateHoriBounds(2, 'p2'), calculateHoriBounds(3, 'p2'), calculateHoriBounds(4, 'p2')];
+          let vertBounds = [calculateVertBounds(1, 'p2'), calculateVertBounds(2, 'p2'), calculateVertBounds(3, 'p2'), calculateVertBounds(4, 'p2')]
+          let boundHit = false;
+
           //console.log(this == document.querySelector(`[data-id='${parseInt($(this).attr("data-id"))}']`));
           //this.append(draggedShip);
           let shipPlaces = [];
@@ -297,19 +401,83 @@ function setup(client, room, shared, my, participants) {
           for (let i = 0; i < draggedShipLength; i++) {
               temp = parseInt($(this).attr("data-id")) + i;
               //console.log(temp);
-              place = document.querySelector(`[data-id='${temp}']`);
-              shipPlaces.push(place);
-              tempPlaces.push(temp);
-              numberOfShipsDropped++;
+
+              if(i == 0) {
+                if(shipClass == 'destroyer') {
+                  horiBounds[0].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  horiBounds[1].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'battleship') {
+                  horiBounds[2].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'carrier') {
+                  horiBounds[3].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }
+                
+              }
+
+              if(!boundHit){
+                place = document.querySelector(`[data-id='${temp}']`);
+                shipPlaces.push(place);
+                tempPlaces.push(temp);
+                numberOfShipsDropped++;
+              }
           }
           }else if(!isHorizontal){
           for (let i = 0; i < draggedShipLength; i++) {
               temp = parseInt($(this).attr("data-id")) + (16 * i);
               //console.log(temp);
-              place = document.querySelector(`[data-id='${temp}']`);
-              shipPlaces.push(place);
-              tempPlaces.push(temp);
-              numberOfShipsDropped++;
+
+              if(i == 0) {
+                if(shipClass == 'destroyer') {
+                  vertBounds[0].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  vertBounds[1].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'battleship') {
+                  vertBounds[2].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }else if(shipClass == 'carrier') {
+                  vertBounds[3].forEach((b) => {
+                    if(b === temp) {
+                      boundHit = true;
+                    }
+                  });
+                }
+                
+              }
+
+              if(!boundHit){
+                place = document.querySelector(`[data-id='${temp}']`);
+                shipPlaces.push(place);
+                tempPlaces.push(temp);
+                numberOfShipsDropped++;
+              }
           }
           }
           
@@ -318,35 +486,37 @@ function setup(client, room, shared, my, participants) {
           shipPlaces[p].classList.add('taken', shipClass);      
           }
 
-          let classes = $(draggedShip).attr('class').split(/\s+/);
-          if(classes[1] == 'p2-destroyer-container') {
-          shared.p2placed[0] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p2ShipsPos[0].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p2-submarine-container') {
-          shared.p2placed[1] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p2ShipsPos[1].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p2-cruiser-container') {
-          shared.p2placed[2] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p2ShipsPos[2].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p2-battleship-container') {
-          shared.p2placed[3] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p2ShipsPos[3].push(tempPlaces[j]);
-          }
-          } else if(classes[1] == 'p2-carrier-container') {
-          shared.p2placed[4] = true;
-          for (let j = 0; j < tempPlaces.length; j++) {
-              shared.p2ShipsPos[4].push(tempPlaces[j]);
-          }
-          }
+          if(!boundHit){
+            let classes = $(draggedShip).attr('class').split(/\s+/);
+            if(classes[1] == 'p2-destroyer-container') {
+            shared.p2placed[0] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p2ShipsPos[0].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p2-submarine-container') {
+            shared.p2placed[1] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p2ShipsPos[1].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p2-cruiser-container') {
+            shared.p2placed[2] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p2ShipsPos[2].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p2-battleship-container') {
+            shared.p2placed[3] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p2ShipsPos[3].push(tempPlaces[j]);
+            }
+            } else if(classes[1] == 'p2-carrier-container') {
+            shared.p2placed[4] = true;
+            for (let j = 0; j < tempPlaces.length; j++) {
+                shared.p2ShipsPos[4].push(tempPlaces[j]);
+            }
+            }
 
-          displayGrid2.removeChild(draggedShip);
+            displayGrid2.removeChild(draggedShip);
+          }
       
   }
 
@@ -794,7 +964,7 @@ function setup(client, room, shared, my, participants) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s battleship'
       p1BattleshipCount = 10
     }
-    if (p1arrierCount === 5) {
+    if (p1CarrierCount === 5) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s carrier'
       p1CarrierCount = 10
     }
