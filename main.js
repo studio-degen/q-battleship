@@ -1,11 +1,11 @@
 function setup(client, room, shared, my, participants) {
-  const p1Grid = document.querySelector('.grid-p1');
-  const p2Grid = document.querySelector('.grid-p2');
+  const p1Grid = document.querySelector('.grid-p1'); //game grid for p1
+  const p2Grid = document.querySelector('.grid-p2'); //game grid for p2
 
-  const displayGrid1 = document.querySelector('.p1-grid-display');
-  const displayGrid2 = document.querySelector('.p2-grid-display');
+  const displayGrid1 = document.querySelector('.p1-grid-display'); //displays ships at the beginning for p1
+  const displayGrid2 = document.querySelector('.p2-grid-display'); //displays ships at the beginning for p2
 
-  const ships = document.querySelectorAll('.ship');
+  const ships = document.querySelectorAll('.ship'); //every ship
 
   const destroyer1 = document.querySelector('.p1-destroyer-container');
   const submarine1 = document.querySelector('.p1-submarine-container');
@@ -22,38 +22,35 @@ function setup(client, room, shared, my, participants) {
   const carrier2 = document.querySelector('.p2-carrier-container');
   const p2Ships = [destroyer2, submarine2, cruiser2, battleship2, carrier2];
 
-
-  if(room.getHostName() === client.getUid()){
-    destroyer2.style.opacity = 0;
-    submarine2.style.opacity = 0;
-    cruiser2.style.opacity = 0;
-    battleship2.style.opacity = 0;
-    carrier2.style.opacity = 0;
+  //we need to change this so that anyone beyond p2 is a viewer
+  if(room.getHostName() === client.getUid()){ //checks whether you are host aka player 1
+    displayGrid2.style.opacity = 0; //can't see/move opponents ships
     console.log('you host')
-  }else{
-    destroyer1.style.opacity = 0;
-    submarine1.style.opacity = 0;
-    cruiser1.style.opacity = 0;
-    battleship1.style.opacity = 0;
-    carrier1.style.opacity = 0;
+  }else{ //checks whether you are player 2
+    displayGrid1.style.opacity = 0; //can't see/move opponents ships
     console.log('you not host');
   }
-  let participNum = 0;
 
+  //Q1: IS THIS JUST A CHECK?
+  let participNum = 0;
   setInterval(() => {
     participNum = 0;
-
     participants.forEach(()=>{
       participNum++;
-      //console.log(participNum);
+      //console.log("participant number: ", participNum);
     });
   }, 1000);
-
-  
 
   const startButton = document.querySelector('#start');
   const entangleButton = document.querySelector('#entangle');
   const rotateButton = document.querySelector('#rotate');
+
+  //button presets
+  rotateButton.style.display="relative"; //show button in view
+  entangleButton.style.display="relative"; 
+  startButton.style.opacity="0%"; //remove button from view
+  startButton.style.position="absolute";
+  startButton.style.bottom="0"; //push to bottom of screen
 
   //const whichPlayerDisplay = document.querySelector('#who-you');
   const turnDisplay = document.querySelector('#whose-go');
@@ -69,14 +66,22 @@ function setup(client, room, shared, my, participants) {
   let isGameOver = false;
 
   let currentPlayer = 'p1';
+
+  //All shared variables
   shared.p1placed = [false, false, false, false, false];
   shared.p2placed = [false, false, false, false, false];
   shared.p1ShipsPos = [[],[],[],[],[]];
   shared.p2ShipsPos = [[],[],[],[],[]];
-  shared.entangledPoints = [];
-
+  shared.entangledPoints = [[]];
   shared.p1SquareStates = [];
   shared.p2SquareStates = [];
+
+  //setting current turn to p1
+  if(room.getHostName() === client.getUid()) {
+    shared.currentTurn = "Player1";
+  }
+  shared.currentTurn = shared.currentTurn || "Player1"; //we might not need this
+
   // setInterval(() => {
   //   console.log(shared);
   // }, 1000);
@@ -88,32 +93,27 @@ function setup(client, room, shared, my, participants) {
   //   console.log(shared, my);
   // });
 
-  if(room.getHostName() === client.getUid()) {
-    shared.currentTurn = "Player1";
-  }
-  shared.currentTurn = shared.currentTurn || "Player1";
+  let totalShipCount = 2; //CHANGE TO 10 IN THE END
+  const width = 16; //number of cells 
 
-  let totalShipCount = 2;
-  const width = 16;
-
-  //Create Board
+  //Create Board fn
   function createBoard(grid, squares, pname, states) {
     for (let i = 0; i < width*width; i++) {
       const square = document.createElement('div');
       if(pname == 'p1'){
         square.dataset.id = i;
       }else if(pname == 'p2'){
-        square.dataset.id = 255+i;
-      }
-      
+        square.dataset.id = width*width - 1 + i;
+      }  
       grid.appendChild(square);
       squares.push(square);
       states.push('false');
     }
   }
-  createBoard(p1Grid, p1Squares, 'p1', shared.p1SquareStates);
-  createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates);
-  console.log(shared);
+  createBoard(p1Grid, p1Squares, 'p1', shared.p1SquareStates); //board for p1
+  createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates); //board for p2
+
+  //console.log("printing shared", shared);
 
   // function turnChange() {
   //   if(shared.currentTurn == "p1") {
@@ -164,7 +164,7 @@ function setup(client, room, shared, my, participants) {
 
 
 
-///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////// DRAG EVENT LISTENERS
 
 
 
@@ -174,10 +174,6 @@ function setup(client, room, shared, my, participants) {
   let draggedShip;
   let draggedShipLength;
   let numberOfShipsDropped = 0;
-  //move around user ship
-  // let parsedP1Sq = JSON.parse(JSON.stringify(shared.p1Squares));
-  // let parsedP2Sq = JSON.parse(JSON.stringify(shared.p2Squares));
-  // console.log(parsedP1Sq, parsedP2Sq);
 
   ships.forEach(ship => ship.addEventListener('dragstart', dragStart));
   p1Squares.forEach(square => square.addEventListener('dragstart', dragStart));
@@ -196,14 +192,11 @@ function setup(client, room, shared, my, participants) {
 
   ships.forEach(ship => ship.addEventListener('mousedown', (e) => {
       selectedShipNameWithIndex = e.target.id;
-      //console.log(selectedShipNameWithIndex);
   }))
 
   function dragStart() {
-      //console.log('drag start');
       draggedShip = this;
       draggedShipLength = this.childNodes.length;
-      //console.log(draggedShip);
       console.log(shared);
   }
 
@@ -365,13 +358,13 @@ function setup(client, room, shared, my, participants) {
 
 
 
-///////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////// STORE SHIP INDICES FOR P1 & P2 AFTER BEING DRAGGED
 
 
 
 
-
-
+  //WHAT DOES THIS DO?
+  //function to save and share the ship cell indexes to both players
   function replaceShip(ship, posarray){
     let shipPlaces = [];
     let temp;
@@ -392,188 +385,67 @@ function setup(client, room, shared, my, participants) {
   }
 
   let shipNames = ['destroyer', 'submarine', 'cruiser', 'battleship', 'carrier'];
-
   let p1ShipsPlaced = [false, false, false, false, false];
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
+    displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
-  }, 1000);
-
-  function checkHitOrMiss(){
-    if(!(room.getHostName() === client.getUid())){
-      //console.log(shared);
-      shared.p1SquareStates.forEach((state, index) => {
-        if(state == true){
-          //console.log(p1Squares[index].classList);
-          if(p1Squares[index].classList.contains('taken')){
-            p1Squares[index].classList.add('boom');
-          }else{
-            p1Squares[index].classList.add('miss');
-          }
-          state = false;
-        }
-      });
-
-      shared.p2SquareStates.forEach((state, index) => {
-        if(state == true){
-          //console.log(p2Squares[index].classList);
-          if(p2Squares[index].classList.contains('taken')){
-            p2Squares[index].classList.add('boom');
-          }else{
-            p2Squares[index].classList.add('miss');
-          }
-          state = false;
-        }
-      });
-    }
-
-    if((room.getHostName() === client.getUid())){
-      //console.log(shared);
-      shared.p1SquareStates.forEach((state, index) => {
-        if(state == true){
-          //console.log(p1Squares[index].classList);
-          if(p1Squares[index].classList.contains('taken')){
-            p1Squares[index].classList.add('boom');
-          }else{
-            p1Squares[index].classList.add('miss');
-          }
-          state = false;
-        }
-      });
-
-      shared.p2SquareStates.forEach((state, index) => {
-        if(state == true){
-          //console.log(p2Squares[index].classList);
-          if(p2Squares[index].classList.contains('taken')){
-            p2Squares[index].classList.add('boom');
-          }else{
-            p2Squares[index].classList.add('miss');
-          }
-          state = false;
-        }
-      });
-    }
-    
-  }
+  }, 500);
 
   function checkP1ShipsPlaced() {
     if(!(room.getHostName() === client.getUid())){
-      
       p1Ships.forEach((ship, index) => {
-        //console.log(ship);
-        if(shared.p1placed[index]){
-          //console.log(shared);
-          //console.log(ship + ' placed');
-          if(!(p1ShipsPlaced[index])){
-            replaceShip(shipNames[index], shared.p1ShipsPos[index]);
-            //console.log(shared);
-            displayGrid1.removeChild(ship);
+        if(shared.p1placed[index]){ //check that ship has been dragged onto board
+          if(!(p1ShipsPlaced[index])){ //check if p1ShipsPlaced[index] is false
+            replaceShip(shipNames[index], shared.p1ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
+            displayGrid1.removeChild(ship); 
             p1ShipsPlaced[index] = true;
           }
-          
         }
       });
-      
     }
   }
 
   function checkP2ShipsPlaced() {
     if(room.getHostName() === client.getUid()){
-      
       p2Ships.forEach((ship, index) => {
-        //console.log(ship);
-        if(shared.p2placed[index]){
-          //console.log(shared);
-          //console.log(ship + ' placed');
-          if(!(p2ShipsPlaced[index])){
-            replaceShip(shipNames[index], shared.p2ShipsPos[index]);
-            //console.log(shared);
+        if(shared.p2placed[index]){ //check that ship has been dragged onto board
+          if(!(p2ShipsPlaced[index])){ //check if p1ShipsPlaced[index] is false
+            replaceShip(shipNames[index], shared.p2ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
             displayGrid2.removeChild(ship);
             p2ShipsPlaced[index] = true;
           }
-          
         }
       });
-      
     }
   }
 
 
 
 
-  ///////////////////////////////////////////////////////////////////////
 
-
-
-
-  setInterval(()=> {
-  displaySquare();
-  }, 500);
-  function entangleBegin(){
-    setInterval(()=> {
-      chooseEntanglePoints();
-    }, 500);
-  }
-  function begin(){
-    if(shared.entangledPoints[entangleMax-1]!= false){
-      entangleButton.removeEventListener('click', entangleBegin);
-      setInterval(()=> {
-        playGame();
-      }, 500);
-    }
-    else
-      infoDisplay.innerHTML = 'Waiting for all ' + entangleMax + ' entangled squares'; 
-  }
   
-  let turnState = 'p1';
-  //Game Logic
-  function playGame() {
-    //console.log(currentPlayer);
-    if (isGameOver) return;
-    if(numberOfShipsDropped>=totalShipCount){
-      //infoDisplay.innerHTML = ''
-      if (currentPlayer === 'p1') {
-        turnDisplay.innerHTML = 'Player 1 Go';
-        
-        p2Squares.forEach((square, index) => square.addEventListener('click', function(e) {
-        revealSquare(square, 'p1', index);
-        currentPlayer = 'p2';
-      }))
-      
-      }else if (currentPlayer === 'p2') {
-        turnDisplay.innerHTML = 'Player 2 Go';
-        p1Squares.forEach((square, index) => square.addEventListener('click', function(e) {
-          revealSquare(square, 'p2', index);
-          currentPlayer = 'p1';
-        }))
-      }
-    }
-    else if (numberOfShipsDropped<totalShipCount)
-      infoDisplay.innerHTML = 'All Ships Not Placed'
-    
-  }
-  startButton.addEventListener('click', begin);
-  entangleButton.addEventListener('click', entangleBegin);
+  /////////////////////////////////////////////////////////////////////// SQUARE DISPLAYS + UPDATES
 
-  let destroyerCount = 0;
-  let submarineCount = 0;
-  let cruiserCount = 0;
-  let battleshipCount = 0;
-  let carrierCount = 0;
+
+
+
+
+  let p1DestroyerCount = 0;
+  let p1SubmarineCount = 0;
+  let p1CruiserCount = 0;
+  let p1BattleshipCount = 0;
+  let p1CarrierCount = 0;
 
   let p2DestroyerCount = 0;
   let p2SubmarineCount = 0;
   let p2CruiserCount = 0;
   let p2BattleshipCount = 0;
   let p2CarrierCount = 0;
-
   function displaySquare(){
-    
-    //console.log('fn running')
-    //console.log(shared.entangledPoints)
     if(room.getHostName() === client.getUid()){
       p2Squares.forEach((square, index) => {
         if (square.classList.contains('boom') || square.classList.contains('miss')){
@@ -596,14 +468,13 @@ function setup(client, room, shared, my, participants) {
       })
     }
   }
-
   function revealSquare(square, turnState, index) {
     if (!square.classList.contains('boom') && square.classList.contains('p1')) { //p2 since player incrememnts before this check.. but it is actually checking for p1
-      if (square.classList.contains('destroyer')) {destroyerCount++;}
-      if (square.classList.contains('submarine')) {submarineCount++;}
-      if (square.classList.contains('cruiser')) {cruiserCount++;}
-      if (square.classList.contains('battleship')) {battleshipCount++;}
-      if (square.classList.contains('carrier')) {carrierCount++;}
+      if (square.classList.contains('destroyer')) {p1DestroyerCount++;}
+      if (square.classList.contains('submarine')) {p1SubmarineCount++;}
+      if (square.classList.contains('cruiser')) {p1CruiserCount++;}
+      if (square.classList.contains('battleship')) {p1BattleshipCount++;}
+      if (square.classList.contains('carrier')) {p1CarrierCount++;}
     }
     else if (!square.classList.contains('boom') && square.classList.contains('p2')) {
       if (square.classList.contains('destroyer')) {p2DestroyerCount++;}
@@ -670,15 +541,48 @@ function setup(client, room, shared, my, participants) {
     checkForWins();
     playGame();
   }
+  function playMusic(url) {
+    new Audio(url).play()
+  }
 
 
-  
+
+
+
+  /////////////////////////////////////////////////////////////////////// HIT AND MISS
 
 
 
 
-///////////////////////////////////////////////////////////////////////
 
+  function checkHitOrMiss(){
+    shared.p1SquareStates.forEach((state, index) => {
+      if(state == true){
+        if(p1Squares[index].classList.contains('taken')){
+          p1Squares[index].classList.add('boom');
+        }else{
+          p1Squares[index].classList.add('miss');
+        }
+        state = false;
+      }
+    });
+
+    shared.p2SquareStates.forEach((state, index) => {
+      if(state == true){
+        if(p2Squares[index].classList.contains('taken')){
+          p2Squares[index].classList.add('boom');
+        }else{
+          p2Squares[index].classList.add('miss');
+        }
+        state = false;
+      }
+    });
+  }
+
+
+
+
+  /////////////////////////////////////////////////////////////////////// ENTANGLE MECHANIC
 
 
 
@@ -691,20 +595,44 @@ function setup(client, room, shared, my, participants) {
   for(let i=0;i<entangleMax;i++){
     shared.entangledPoints.push(false)
   }
-
+  function checkEntanglePossible(){
+    let entanglePossible= true;
+    shared.p2placed.forEach((state) => {
+      if(state===false){
+        entanglePossible=false;
+        infoDisplay.innerHTML ="Player 2 has not placed all ships yet";
+      }
+    })
+    shared.p1placed.forEach((state) => {
+      if(state===false){
+        entanglePossible=false;
+        infoDisplay.innerHTML ="Player 1 has not placed all ships yet";
+      }
+    })
+    if(entanglePossible==true){
+      infoDisplay.innerHTML ="Commence Entanglement";
+      entangleBegin();
+    }
+  }
+  function entangleBegin(){
+    rotateButton.style.display="none"; //remove button from view
+    entangleButton.style.display="none"; //remove button from view
+    startButton.style.opacity="100%"; ; //show button in view
+    startButton.style.position="relative"; ; //show button in view
+    setInterval(()=> {
+      chooseEntanglePoints();
+    }, 500);
+  }
   function chooseEntanglePoints(){
     
     p1Squares.forEach(square => square.addEventListener('dblclick', function(e){
-      //console.log("entangle this point");
       console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
         square.classList.add('entangled');
         square.classList.add(entangleCount);
-        assignEntanglePair();
+        assignEntanglePair1();
         entangleCount++;
-        //console.log(entangleCount);
-        //console.log(p1Squares.findIndex(square));
         infoDisplay.innerHTML ="";
       }else if(entangleCount>=entangleMax){
         infoDisplay.innerHTML ="You can't entangle any more, don't be greedy";
@@ -712,14 +640,25 @@ function setup(client, room, shared, my, participants) {
         infoDisplay.innerHTML ="You're trying to entangle the sea";
       }
     }));
-    // p2Squares.forEach(square => square.addEventListener('dblclick', function(e){
-    //   console.log("entangle this point");
-    //   square.style.backgroundColor = "grey";
-    // }));
-  }
 
-  function assignEntanglePair(){
-  
+    p2Squares.forEach(square => square.addEventListener('dblclick', function(e){
+      console.log(shared.entangledPoints);
+      if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
+        playMusic("./assets/sounds/entPlaced.wav");
+        square.classList.add('entangled');
+        square.classList.add(entangleCount);
+        assignEntanglePair2();
+        entangleCount++;
+        infoDisplay.innerHTML ="";
+      }else if(entangleCount>=entangleMax){
+        infoDisplay.innerHTML ="You can't entangle any more, don't be greedy";
+      }else if(!square.classList.contains('taken')){
+        infoDisplay.innerHTML ="You're trying to entangle the sea";
+      }
+    }));
+    
+  }
+  function assignEntanglePair1(){
     for(let i=0; i<p1Squares.length; i++){
       if (p1Squares[i].classList.contains('entangled') && !p1Squares[i].classList.contains('sharedEnt')) {
         shared.entangledPoints[entangleCount]=i;
@@ -731,7 +670,24 @@ function setup(client, room, shared, my, participants) {
       if (p2Squares[randomPoint].classList.contains('taken') && !p2Squares[randomPoint].classList.contains('entangled')){
         p2Squares[randomPoint].classList.add('entangled');
         p2Squares[randomPoint].classList.add(entangleCount);
-        console.log(entangleCount);
+        break;
+      }
+      else
+        randomPoint= Math.floor(Math.random() * (width*width));
+    }
+  }
+  function assignEntanglePair2(){
+    for(let i=0; i<p2Squares.length; i++){
+      if (p2Squares[i].classList.contains('entangled') && !p2Squares[i].classList.contains('sharedEnt')) {
+        shared.entangledPoints[entangleCount]=i;
+        p2Squares[i].classList.add('sharedEnt');
+      }
+    }
+    randomPoint= Math.floor(Math.random() * (width*width));
+    while(paired===false){
+      if (p1Squares[randomPoint].classList.contains('taken') && !p1Squares[randomPoint].classList.contains('entangled')){
+        p1Squares[randomPoint].classList.add('entangled');
+        p1Squares[randomPoint].classList.add(entangleCount);
         break;
       }
       else
@@ -749,12 +705,72 @@ function setup(client, room, shared, my, participants) {
       }
     })
   }
+  entangleButton.addEventListener('click', checkEntanglePossible);
+
+
+
+/////////////////////////////////////////////////////////////////////// START GAME + MECHANICS
 
 
 
 
 
-///////////////////////////////////////////////////////////////////////
+
+  let turnState = 'p1';
+  function begin(){
+    if(shared.entangledPoints[entangleMax-1]!= false){
+      entangleButton.removeEventListener('click', entangleBegin);
+      rotateButton.style.display="none"; //remove button from view
+      entangleButton.style.display="none"; //remove button from view
+      startButton.style.display="none"; //remove button from view
+      setInterval(()=> {
+        playGame();
+      }, 500);
+    }
+    else
+      infoDisplay.innerHTML = 'Waiting for all ' + entangleMax + ' entangled squares'; 
+  }
+  //Game Logic
+  function playGame() {
+    //console.log(currentPlayer);
+    if (isGameOver) return;
+    if(numberOfShipsDropped>=totalShipCount){
+      //infoDisplay.innerHTML = ''
+      if (currentPlayer === 'p1') {
+        turnDisplay.innerHTML = 'Player 1 Go';
+        
+        p2Squares.forEach((square, index) => square.addEventListener('click', function(e) {
+        revealSquare(square, 'p1', index);
+        currentPlayer = 'p2';
+      }))
+      
+      }else if (currentPlayer === 'p2') {
+        turnDisplay.innerHTML = 'Player 2 Go';
+        p1Squares.forEach((square, index) => square.addEventListener('click', function(e) {
+          revealSquare(square, 'p2', index);
+          currentPlayer = 'p1';
+        }))
+      }
+    }
+    else if (numberOfShipsDropped<totalShipCount)
+      infoDisplay.innerHTML = 'All Ships Not Placed'
+    
+  }
+  startButton.addEventListener('click', begin);
+
+  
+
+
+
+/////////////////////////////////////////////////////////////////////// ENFORCE TURNS
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////// END GAME CHECKS + WIN SCREEN
 
 
 
@@ -762,25 +778,25 @@ function setup(client, room, shared, my, participants) {
 
 
   function checkForWins() {
-    if (destroyerCount === 2) {
+    if (p1DestroyerCount === 2) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s destroyer'
-      destroyerCount = 10
+      p1DestroyerCount = 10
     }
-    if (submarineCount === 3) {
+    if (p1SubmarineCount === 3) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s submarine'
-      submarineCount = 10
+      p1SubmarineCount = 10
     }
-    if (cruiserCount === 3) {
+    if (p1CruiserCount === 3) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s cruiser'
-      cruiserCount = 10
+      p1CruiserCount = 10
     }
-    if (battleshipCount === 4) {
+    if (p1BattleshipCount === 4) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s battleship'
-      battleshipCount = 10
+      p1BattleshipCount = 10
     }
-    if (carrierCount === 5) {
+    if (p1arrierCount === 5) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s carrier'
-      carrierCount = 10
+      p1CarrierCount = 10
     }
     if (p2DestroyerCount === 2) {
       infoDisplay.innerHTML = 'You sunk player 2 \'s Destroyer'
@@ -802,7 +818,7 @@ function setup(client, room, shared, my, participants) {
       infoDisplay.innerHTML = 'You sunk player 2 \'s Carrier'
       p2CarrierCount = 10
     }
-    if ((destroyerCount + submarineCount + cruiserCount + battleshipCount + carrierCount) === 50) {
+    if ((p1DestroyerCount + p1SubmarineCount + p1CruiserCount + p1BattleshipCount + p1CarrierCount) === 50) {
       infoDisplay.innerHTML = "PLAYER 1 WINS"
       gameOver()
     }
@@ -811,12 +827,14 @@ function setup(client, room, shared, my, participants) {
       gameOver()
     }
   }
-  function playMusic(url) {
-    new Audio(url).play()
-  }
-function gameOver() {
+  
+  function gameOver() {
   isGameOver = true;
   startButton.removeEventListener('click', begin);
-}
-}
+  }
 
+
+
+
+  /////////////////////////////////////////////////////////////////////// FIN
+}

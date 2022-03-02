@@ -17,11 +17,11 @@ body {
 button {
   background-color: var(--bgMed);
   border-radius: 4px;
-  display: inline-block;
   cursor: pointer;
   color: var(--bgLight);
   font-size: 12px;
   padding: 7px 12px;
+  margin: 10px auto;
   text-decoration: none;
   border: none;
 }
@@ -76,6 +76,13 @@ h1 {
   /* background-color: blue; */
   background-image: url(./assets/ocean.jpg);
   margin: 20px;
+}
+.buttonHolder {
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 .hidden-info {
   margin: 20px;
