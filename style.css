@@ -45,12 +45,23 @@ select {
 h1 {
   text-align: center;
 }
+#game-set-up {
+  position: absolute;
+  width: 40vw;
+  padding: 50px;
+}
 .container {
   display: flex;
 }
 .mainWrapper {
   margin: auto;
   width: fit-content;
+}
+.overlay {
+  width: calc(16 * var(--gridCellSize));
+  height: calc(16 * var(--gridCellSize));
+  /* margin-left: var(--leftMargin); */
+  margin: 20px;
 }
 
 .grid-p1 {
@@ -60,8 +71,8 @@ h1 {
   flex-wrap: wrap;
   /* background-color: blue; */
   background-image: url(./assets/ocean.jpg);
-  margin-left: var(--leftMargin);
-  margin: 20px;
+  /* margin-left: var(--leftMargin);
+  margin: 20px; */
 }
 
 .grid div {
@@ -76,12 +87,13 @@ h1 {
   flex-wrap: wrap;
   /* background-color: blue; */
   background-image: url(./assets/ocean.jpg);
-  margin: 20px;
+  /* margin: 20px; */
 }
 .buttonHolder {
-  margin: auto;
-  width: 500px;
+  margin: 0;
+  /* width: 500px; */
   display: flex;
+  flex-direction: column;
 }
 .hidden-info {
   margin: 20px;

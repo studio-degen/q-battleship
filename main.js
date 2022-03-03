@@ -4,6 +4,10 @@ function setup(client, room, shared, my, participants) {
 
   const displayGrid1 = document.querySelector('.p1-grid-display'); //displays ships at the beginning for p1
   const displayGrid2 = document.querySelector('.p2-grid-display'); //displays ships at the beginning for p2
+  const overlay1 = document.querySelector('.overlay1'); //displays ships at the beginning for p2
+  const overlay2 = document.querySelector('.overlay2'); //displays ships at the beginning for p2
+
+  const gameInfo = document.querySelector('#game-set-up'); //displays ships at the beginning for p2
 
   const ships = document.querySelectorAll('.ship'); //every ship
   const shipNames = ['destroyer', 'submarine', 'cruiser', 'battleship', 'carrier'];
@@ -26,10 +30,18 @@ function setup(client, room, shared, my, participants) {
   //we need to change this so that anyone beyond p2 is a viewer
   if(room.getHostName() === client.getUid()){ //checks whether you are host aka player 1
     displayGrid2.style.opacity = 0; //can't see/move opponents ships
-    console.log('you host')
+    displayGrid2.style.display = "none"; 
+    gameInfo.style.left="50%"; 
+    gameInfo.style.top="100px";
+    p2Grid.style.opacity = 0; //can't see opponents grid
+    //console.log('you host')
   }else{ //checks whether you are player 2
     displayGrid1.style.opacity = 0; //can't see/move opponents ships
-    console.log('you not host');
+    displayGrid1.style.display = "none"; 
+    gameInfo.style.top="100px";
+    gameInfo.style.left=0; 
+    p1Grid.style.opacity = 0; //can't see opponents grid
+    //console.log('you not host');
   }
 
   //Q1: IS THIS JUST A CHECK?
@@ -66,8 +78,6 @@ function setup(client, room, shared, my, participants) {
   let isHorizontal = true;
   let isGameOver = false;
 
-  let currentPlayer = 'p1';
-
   //All shared variables
   shared.p1placed = [false, false, false, false, false];
   shared.p2placed = [false, false, false, false, false];
@@ -76,6 +86,8 @@ function setup(client, room, shared, my, participants) {
   shared.entangledPoints = [[]];
   shared.p1SquareStates = [];
   shared.p2SquareStates = [];
+  shared.startCount = 0;
+  shared.currentPlayer = 'p1';
 
   //setting current turn to p1
   if(room.getHostName() === client.getUid()) {
@@ -108,15 +120,6 @@ function setup(client, room, shared, my, participants) {
   createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates); //board for p2
 
   //console.log("printing shared", shared);
-
-  // function turnChange() {
-  //   if(shared.currentTurn == "p1") {
-  //     shared.currentTurn = "p2";
-  //   } else if(shared.currentTurn == "p2") {
-  //     shared.currentTurn = "p1";
-  //   }
-  //   console.log(shared.currentTurn);
-  // }
 
   //Rotate the ships
   function rotate() {
@@ -261,7 +264,7 @@ function setup(client, room, shared, my, participants) {
           if(isHorizontal){
             for (let i = 0; i < draggedShipLength; i++) {
                 temp = parseInt($(this).attr("data-id")) + i;
-                console.log(temp);
+                //console.log(temp);
 
                 if(i == 0) {
                   if(shipClass == 'destroyer') {
@@ -395,7 +398,7 @@ function setup(client, room, shared, my, participants) {
             
             displayGrid1.removeChild(draggedShip);
           }
-          console.log(p1horiBounds);
+          //console.log(p1horiBounds);
 
   }
 
@@ -672,16 +675,16 @@ function setup(client, room, shared, my, participants) {
       })
     }
   }
-  function revealSquare(square, turnState, index) {
-    if (!square.classList.contains('boom') && square.classList.contains('p1')) { //p2 since player incrememnts before this check.. but it is actually checking for p1
-      if (square.classList.contains('destroyer')) {p1DestroyerCount++;}
-      if (square.classList.contains('submarine')) {p1SubmarineCount++;}
-      if (square.classList.contains('cruiser')) {p1CruiserCount++;}
-      if (square.classList.contains('battleship')) {p1BattleshipCount++;}
-      if (square.classList.contains('carrier')) {p1CarrierCount++;}
+  function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
+    if (!square.classList.contains('boom') && square.classList.contains('p1')) { //counts number of p1 ships that have been destroyed
+      if (square.classList.contains('destroyer')) p1DestroyerCount++;
+      if (square.classList.contains('submarine')) p1SubmarineCount++;
+      if (square.classList.contains('cruiser')) p1CruiserCount++;
+      if (square.classList.contains('battleship')) p1BattleshipCount++;
+      if (square.classList.contains('carrier')) p1CarrierCount++;
     }
-    else if (!square.classList.contains('boom') && square.classList.contains('p2')) {
-      if (square.classList.contains('destroyer')) {p2DestroyerCount++;}
+    else if (!square.classList.contains('boom') && square.classList.contains('p2')) { //counts number of p2 ships that have been destroyed
+      if (square.classList.contains('destroyer')) p2DestroyerCount++;
       if (square.classList.contains('submarine')) p2SubmarineCount++;
       if (square.classList.contains('cruiser')) p2CruiserCount++;
       if (square.classList.contains('battleship')) p2BattleshipCount++;
@@ -689,24 +692,26 @@ function setup(client, room, shared, my, participants) {
     }
 
     if(square.classList.contains('boom') || square.classList.contains('miss')) return;
-    if (square.classList.contains('taken') && square.classList.contains('entangled') && square.classList.contains('p1')) {
+
+    if (square.classList.contains('taken') && square.classList.contains('entangled') && square.classList.contains('p1')){ //boom entangled squares. not working yet{
       square.classList.add('boom');
       playMusic("./assets/sounds/boom.wav");
       for(let i=0; i<entangleMax; i++){
         if(square.classList.contains(i)){
           tempIndex = i;
-          console.log("for p1: ", tempIndex);
+          //console.log("for p1: ", tempIndex);
           boomEntangledPair(tempIndex);
           break;
         }
       }
-    }else if(square.classList.contains('taken')) { 
+    }
+    else if(square.classList.contains('taken')) { 
       square.classList.add('boom');
       playMusic("./assets/sounds/boom.wav");
 
-      if(turnState == 'p1') {
+      if(turnState == 'p2') {
         shared.p2SquareStates[index] = true;
-      } else if(turnState == 'p2') {
+      } else if(turnState == 'p1') {
         shared.p1SquareStates[index] = true;
       }
 
@@ -714,39 +719,20 @@ function setup(client, room, shared, my, participants) {
       square.classList.add('miss');
       playMusic("./assets/sounds/miss.wav");
 
-      if(turnState == 'p1') {
+      if(turnState == 'p2') {
         shared.p2SquareStates[index] = true;
-      } else if(turnState == 'p2') {
+      } else if(turnState == 'p1') {
         shared.p1SquareStates[index] = true;
       }
 
     }
 
-    //console.log(shared);
-  
-
-    // if(turnState==='p1'){
-    //   if(square.classList.contains('boom') || square.classList.contains('miss')) return;
-    //   if (square.classList.contains('taken') && square.classList.contains('p1')) {
-    //     square.classList.add('boom');
-    //   } else {
-    //     square.classList.add('miss');
-    //   }
-    // }
-    // else if(turnState==='p2'){
-    //   if(square.classList.contains('boom') || square.classList.contains('miss')) return;
-    //   if (square.classList.contains('taken') && square.classList.contains('p2')) {
-    //     square.classList.add('boom');
-    //   } else {
-    //     square.classList.add('miss');
-    //   }
-    // }
-
     checkForWins();
     playGame();
   }
   function playMusic(url) {
-    new Audio(url).play()
+    //new Audio(url).play()
+    return;
   }
 
 
@@ -830,7 +816,7 @@ function setup(client, room, shared, my, participants) {
   function chooseEntanglePoints(){
     
     p1Squares.forEach(square => square.addEventListener('dblclick', function(e){
-      console.log(shared.entangledPoints);
+      //console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
         square.classList.add('entangled');
@@ -846,7 +832,7 @@ function setup(client, room, shared, my, participants) {
     }));
 
     p2Squares.forEach(square => square.addEventListener('dblclick', function(e){
-      console.log(shared.entangledPoints);
+      //console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
         square.classList.add('entangled');
@@ -899,13 +885,13 @@ function setup(client, room, shared, my, participants) {
     }
   }
   function boomEntangledPair(i){
-    console.log("for p2: ", i);
+    //console.log("for p2: ", i);
     p2Squares.forEach(p2sqr => {
-      console.log('ENTERED')
+      //console.log('ENTERED')
       if(p2sqr.classList.contains(i)){
         p2sqr.classList.add('boom');
         playMusic("./assets/sounds/boom.wav");
-        console.log("pair is blown");
+        //console.log("pair is blown");
       }
     })
   }
@@ -921,48 +907,54 @@ function setup(client, room, shared, my, participants) {
 
 
   let turnState = 'p1';
+  setInterval(()=> {
+    startCheck();
+  }, 500);
+
   function begin(){
+    shared.startCount++;
     if(shared.entangledPoints[entangleMax-1]!= false){
       entangleButton.removeEventListener('click', entangleBegin);
       rotateButton.style.display="none"; //remove button from view
       entangleButton.style.display="none"; //remove button from view
       startButton.style.display="none"; //remove button from view
-      setInterval(()=> {
-        playGame();
-      }, 500);
+
+      displayGrid2.style.opacity = 0; //can't see see ship container
+      displayGrid1.style.opacity = 0; //can't see ship container
+
+      gameInfo.style.top = "85%"; gameInfo.style.left=0;
+      
     }
     else
       infoDisplay.innerHTML = 'Waiting for all ' + entangleMax + ' entangled squares'; 
   }
+
+  //check if everyone is ready to start playing
+  function startCheck(){
+    if(shared.startCount>=2){
+      turnGridDisplay();
+      setInterval(()=> {
+        playGame();
+      }, 500);
+    }
+    else if (shared.startCount==1)
+      infoDisplay.innerHTML = 'Waiting for a player to start game'; 
+  }
+
   //Game Logic
   function playGame() {
     //console.log(currentPlayer);
     if (isGameOver) return;
-    if(numberOfShipsDropped>=totalShipCount){
-      //infoDisplay.innerHTML = ''
-      if (currentPlayer === 'p1') {
-        turnDisplay.innerHTML = 'Player 1 Go';
-        
-        p2Squares.forEach((square, index) => square.addEventListener('click', function(e) {
-        revealSquare(square, 'p1', index);
-        currentPlayer = 'p2';
-      }))
-      
-      }else if (currentPlayer === 'p2') {
-        turnDisplay.innerHTML = 'Player 2 Go';
-        p1Squares.forEach((square, index) => square.addEventListener('click', function(e) {
-          revealSquare(square, 'p2', index);
-          currentPlayer = 'p1';
-        }))
-      }
-    }
+    if(numberOfShipsDropped>=totalShipCount)
+      gameClicks()
     else if (numberOfShipsDropped<totalShipCount)
       infoDisplay.innerHTML = 'All Ships Not Placed'
-    
   }
+
   startButton.addEventListener('click', begin);
 
-  
+
+
 
 
 
@@ -972,10 +964,50 @@ function setup(client, room, shared, my, participants) {
 
 
 
+function turnGridDisplay(){
+  if(shared.currentPlayer === 'p1'){
+    overlay1.style.backgroundColor="#060841";
+    p1Grid.style.opacity='40%';
+    p2Grid.style.opacity='100%';
+  }
+  else if(shared.currentPlayer === 'p2'){
+    overlay2.style.backgroundColor="#060841";
+    p1Grid.style.opacity='100%';
+    p2Grid.style.opacity='40%';
+  }
+  else{
+    console.log(error);
+  }
+}
+function gameClicks(){
+  infoDisplay.innerHTML = ''
+      p2Squares.forEach((square, index) => square.addEventListener('click', function(e) {
+        if (shared.currentPlayer === 'p1' && room.getHostName() === client.getUid()) {
+          revealSqChecked(square,index,'p2',2);
+        }
+      }))
+
+      p1Squares.forEach((square, index) => square.addEventListener('click', function(e) {
+        if (shared.currentPlayer === 'p2' && room.getHostName() != client.getUid()) {
+          revealSqChecked(square,index,'p1',1);
+        }
+      }))
+}
+
+function revealSqChecked(sq,i,player,playNum){
+  // turnDisplay.innerHTML = 'Player '+ shared.currentPlayer + ' Go';
+  revealSquare(sq, player, i);
+  shared.currentPlayer = player;
+  if (shared.currentPlayer == player) {
+    sq.removeEventListener('click', clicker);
+  }
+}
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////// END GAME CHECKS + WIN SCREEN
-
 
 
 

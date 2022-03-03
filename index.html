@@ -16,35 +16,36 @@
         <h3 id="instruct"></h3>
         <h3 id="key"></h3>
       </div>
-      <div class="buttonHolder">
-        <button id="rotate">Rotate Your Ships</button>
-        <button id="entangle">Entangle Squares</button>
-        <button id="start">Start Game</button>
-      </div>
       <div class="container">
-        <div class="grid grid-p1"></div>
-        <div class="grid grid-p2"></div>
+        <div class="overlay overlay1"><div class="grid grid-p1"></div></div>
+        <div class="overlay overlay2"><div class="grid grid-p2"></div></div>
       </div>
-
-      <div class="hidden-info">
-        <h3 id="whose-go"></h3>
-        <h3 id="info"></h3>
-      </div>
-      <div class="container">
-        <div class="p1-grid-display">
-          <div class="ship p1-destroyer-container" draggable="true"><div id="destroyer-0"></div><div id="destroyer-1"></div></div>
-          <div class="ship p1-submarine-container" draggable="true"><div id="submarine-0"></div><div id="submarine-1"></div><div id="submarine-2"></div></div>
-          <div class="ship p1-cruiser-container" draggable="true"><div id="cruiser-0"></div><div id="cruiser-1"></div><div id="cruiser-2"></div></div>
-          <div class="ship p1-battleship-container" draggable="true"><div id="battleship-0"></div><div id="battleship-1"></div><div id="battleship-2"></div><div id="battleship-3"></div></div>
-          <div class="ship p1-carrier-container" draggable="true"><div id="carrier-0"></div><div id="carrier-1"></div><div id="carrier-2"></div><div id="carrier-3"></div><div id="carrier-4"></div></div>
+      <div id="game-set-up">
+        <div class="buttonHolder">
+          <button id="rotate">Rotate Your Ships</button>
+          <button id="entangle">Entangle Squares</button>
+          <button id="start">Start Game</button>
         </div>
-    
-        <div class="p2-grid-display">
-          <div class="ship p2-destroyer-container" draggable="true"><div id="destroyer-0"></div><div id="destroyer-1"></div></div>
-          <div class="ship p2-submarine-container" draggable="true"><div id="submarine-0"></div><div id="submarine-1"></div><div id="submarine-2"></div></div>
-          <div class="ship p2-cruiser-container" draggable="true"><div id="cruiser-0"></div><div id="cruiser-1"></div><div id="cruiser-2"></div></div>
-          <div class="ship p2-battleship-container" draggable="true"><div id="battleship-0"></div><div id="battleship-1"></div><div id="battleship-2"></div><div id="battleship-3"></div></div>
-          <div class="ship p2-carrier-container" draggable="true"><div id="carrier-0"></div><div id="carrier-1"></div><div id="carrier-2"></div><div id="carrier-3"></div><div id="carrier-4"></div></div>
+        <div class="hidden-info">
+          <h3 id="whose-go"></h3>
+          <h3 id="info"></h3>
+        </div>
+        <div>
+          <div class="p1-grid-display">
+            <div class="ship p1-destroyer-container" draggable="true"><div id="destroyer-0"></div><div id="destroyer-1"></div></div>
+            <div class="ship p1-submarine-container" draggable="true"><div id="submarine-0"></div><div id="submarine-1"></div><div id="submarine-2"></div></div>
+            <div class="ship p1-cruiser-container" draggable="true"><div id="cruiser-0"></div><div id="cruiser-1"></div><div id="cruiser-2"></div></div>
+            <div class="ship p1-battleship-container" draggable="true"><div id="battleship-0"></div><div id="battleship-1"></div><div id="battleship-2"></div><div id="battleship-3"></div></div>
+            <div class="ship p1-carrier-container" draggable="true"><div id="carrier-0"></div><div id="carrier-1"></div><div id="carrier-2"></div><div id="carrier-3"></div><div id="carrier-4"></div></div>
+          </div>
+      
+          <div class="p2-grid-display">
+            <div class="ship p2-destroyer-container" draggable="true"><div id="destroyer-0"></div><div id="destroyer-1"></div></div>
+            <div class="ship p2-submarine-container" draggable="true"><div id="submarine-0"></div><div id="submarine-1"></div><div id="submarine-2"></div></div>
+            <div class="ship p2-cruiser-container" draggable="true"><div id="cruiser-0"></div><div id="cruiser-1"></div><div id="cruiser-2"></div></div>
+            <div class="ship p2-battleship-container" draggable="true"><div id="battleship-0"></div><div id="battleship-1"></div><div id="battleship-2"></div><div id="battleship-3"></div></div>
+            <div class="ship p2-carrier-container" draggable="true"><div id="carrier-0"></div><div id="carrier-1"></div><div id="carrier-2"></div><div id="carrier-3"></div><div id="carrier-4"></div></div>
+          </div>
         </div>
       </div>
     </div>
