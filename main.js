@@ -600,7 +600,7 @@ function setup(client, room, shared, my, participants) {
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
-  }, 500);
+  }, 100);
 
   function checkP1ShipsPlaced() {
     if(!(room.getHostName() === client.getUid())){
@@ -676,20 +676,6 @@ function setup(client, room, shared, my, participants) {
     }
   }
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
-    if (!square.classList.contains('boom') && square.classList.contains('p1')) { //counts number of p1 ships that have been destroyed
-      if (square.classList.contains('destroyer')) p1DestroyerCount++;
-      if (square.classList.contains('submarine')) p1SubmarineCount++;
-      if (square.classList.contains('cruiser')) p1CruiserCount++;
-      if (square.classList.contains('battleship')) p1BattleshipCount++;
-      if (square.classList.contains('carrier')) p1CarrierCount++;
-    }
-    else if (!square.classList.contains('boom') && square.classList.contains('p2')) { //counts number of p2 ships that have been destroyed
-      if (square.classList.contains('destroyer')) p2DestroyerCount++;
-      if (square.classList.contains('submarine')) p2SubmarineCount++;
-      if (square.classList.contains('cruiser')) p2CruiserCount++;
-      if (square.classList.contains('battleship')) p2BattleshipCount++;
-      if (square.classList.contains('carrier')) p2CarrierCount++;
-    }
 
     if(square.classList.contains('boom') || square.classList.contains('miss')) return;
 
@@ -708,7 +694,7 @@ function setup(client, room, shared, my, participants) {
     else if(square.classList.contains('taken')) { 
       square.classList.add('boom');
       playMusic("./assets/sounds/boom.wav");
-
+      shipCount(square);
       if(turnState == 'p2') {
         shared.p2SquareStates[index] = true;
       } else if(turnState == 'p1') {
@@ -727,8 +713,8 @@ function setup(client, room, shared, my, participants) {
 
     }
 
-    checkForWins();
-    playGame();
+    // checkForWins();
+    // playGame();
   }
   function playMusic(url) {
     //new Audio(url).play()
@@ -779,7 +765,7 @@ function setup(client, room, shared, my, participants) {
 
 
   let entangleCount=0;
-  let entangleMax=5;
+  let entangleMax=0;
   let paired=false;
   let i=0;
   for(let i=0;i<entangleMax;i++){
@@ -909,7 +895,8 @@ function setup(client, room, shared, my, participants) {
   let turnState = 'p1';
   setInterval(()=> {
     startCheck();
-  }, 500);
+    checkForWins();
+  }, 100);
 
   function begin(){
     shared.startCount++;
@@ -935,7 +922,7 @@ function setup(client, room, shared, my, participants) {
       turnGridDisplay();
       setInterval(()=> {
         playGame();
-      }, 500);
+      }, 100);
     }
     else if (shared.startCount==1)
       infoDisplay.innerHTML = 'Waiting for a player to start game'; 
@@ -998,9 +985,6 @@ function revealSqChecked(sq,i,player,playNum){
   // turnDisplay.innerHTML = 'Player '+ shared.currentPlayer + ' Go';
   revealSquare(sq, player, i);
   shared.currentPlayer = player;
-  if (shared.currentPlayer == player) {
-    sq.removeEventListener('click', clicker);
-  }
 }
 
 
@@ -1010,7 +994,22 @@ function revealSqChecked(sq,i,player,playNum){
 /////////////////////////////////////////////////////////////////////// END GAME CHECKS + WIN SCREEN
 
 
-
+  function shipCount(square){
+    if (turnState=='p1') { //counts number of p1 ships that have been destroyed
+      if (square.classList.contains('destroyer')) p1DestroyerCount++;
+      if (square.classList.contains('submarine')) p1SubmarineCount++;
+      if (square.classList.contains('cruiser')) p1CruiserCount++;
+      if (square.classList.contains('battleship')) p1BattleshipCount++;
+      if (square.classList.contains('carrier')) p1CarrierCount++;
+    }
+    else if (turnState=='p2') { //counts number of p2 ships that have been destroyed
+      if (square.classList.contains('destroyer')) p2DestroyerCount++;
+      if (square.classList.contains('submarine')) p2SubmarineCount++;
+      if (square.classList.contains('cruiser')) p2CruiserCount++;
+      if (square.classList.contains('battleship')) p2BattleshipCount++;
+      if (square.classList.contains('carrier')) p2CarrierCount++;
+    }
+  }
 
 
   function checkForWins() {
@@ -1055,11 +1054,13 @@ function revealSqChecked(sq,i,player,playNum){
       p2CarrierCount = 10
     }
     if ((p1DestroyerCount + p1SubmarineCount + p1CruiserCount + p1BattleshipCount + p1CarrierCount) === 50) {
-      infoDisplay.innerHTML = "PLAYER 1 WINS"
+      infoDisplay.innerHTML = "PLAYER 1 WINS";
+      console.log( "PLAYER 1 WINS");
       gameOver()
     }
     if ((p2DestroyerCount + p2SubmarineCount + p2CruiserCount + p2BattleshipCount + p2CarrierCount) === 50) {
-      infoDisplay.innerHTML = "PLAYER 2 WINS"
+      infoDisplay.innerHTML = "PLAYER 2 WINS";
+      console.log( "PLAYER 2 WINS");
       gameOver()
     }
   }
