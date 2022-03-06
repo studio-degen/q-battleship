@@ -31,15 +31,15 @@ function setup(client, room, shared, my, participants, qdata) {
   if(room.getHostName() === client.getUid()){ //checks whether you are host aka player 1
     displayGrid2.style.opacity = 0; //can't see/move opponents ships
     displayGrid2.style.display = "none"; 
-    gameInfo.style.left="50%"; 
-    gameInfo.style.top="100px";
+    gameInfo.style.right="100px"; 
+    gameInfo.style.top="120px";
     p2Grid.style.opacity = 0; //can't see opponents grid
     console.log('you host')
   }else{ //checks whether you are player 2
     displayGrid1.style.opacity = 0; //can't see/move opponents ships
     displayGrid1.style.display = "none"; 
-    gameInfo.style.top="100px";
-    gameInfo.style.left=0; 
+    gameInfo.style.top="120px";
+    gameInfo.style.left="100px"; 
     p1Grid.style.opacity = 0; //can't see opponents grid
     console.log('you not host');
   }
@@ -979,25 +979,26 @@ function setup(client, room, shared, my, participants, qdata) {
   function begin(){
     shared.startCount++;
     if(shared.entangledCount>=(entangleMax*2)){
+      startCheck();
+      
+    }
+    else
+      infoDisplay.innerHTML = 'Waiting for both players to entangle ' + entangleMax + ' squares each'; 
+  }
+  //check if everyone is ready to start playing
+  function startCheck(){
+    if(shared.startCount>=2){
       entangleButton.removeEventListener('click', entangleBegin);
       rotateButton.style.display="none"; //remove button from view
       entangleButton.style.display="none"; //remove button from view
+      startButton.style.display="none"; //remove button from view
       //console.log("game starts");
 
       displayGrid2.style.opacity = 0; //can't see see ship container
       displayGrid1.style.opacity = 0; //can't see ship container
 
-      gameInfo.style.top = "85%"; gameInfo.style.left=0;
-      startCheck();
-      
-    }
-    else
-      infoDisplay.innerHTML = 'Waiting for all players to entangle ' + entangleMax + ' squares'; 
-  }
-  //check if everyone is ready to start playing
-  function startCheck(){
-    if(shared.startCount>=2){
-      startButton.style.display="none"; //remove button from view
+      gameInfo.style.top = "85%"; gameInfo.style.left=0; gameInfo.style.border='0px';
+    
       setInterval(()=> {
         playGame();
         checkForWins();

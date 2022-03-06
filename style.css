@@ -1,54 +1,80 @@
 :root {
-  --bgLight: #81c2ff;
-  --bgMed: #1f26b4;
-  --bgDark: #060841;
-  --destroyer: #00abe9;
-  --submarine: #3e509c;
-  --cruise: #81589d;
-  --battleship: #b65899;
-  --carrier: #dd8db5;
+  --yellow: #ffe400;
+  --bgLightGreen: #69d100;
+  --bgDarkGreen: #158100;
+  --bgDarkPurple: #7e0096;
+  --bgLightPink: #ff00ff;
+  --cyan: #00ffff;
   --leftMargin: 60px;
   --gridCellSize: 40px;
 }
-body {
-  font-family: Poppins, sans-serif;
-  background-color: #81c2ff;
-  color: #1f26b4;
-}
-button {
-  background-color: var(--bgMed);
-  border-radius: 4px;
-  cursor: pointer;
-  color: var(--bgLight);
-  font-size: 12px;
-  padding: 7px 12px;
-  margin: 10px auto;
-  text-decoration: none;
-  border: none;
-}
-button:hover {
-  background-color: var(--bgDark);
+@font-face {
+  font-family: "retro_gamingregular";
+  src: url("assets/webfont-kit/retro_gaming-webfont.woff2") format("woff2"),
+    url("assets/webfont-kit/retro_gaming-webfont.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
 }
 
-select {
-  background-color: var(--bgMed);
+body {
+  font-family: "retro_gamingregular";
+  background-color: var(--bgDarkPurple);
+  color: var(--yellow);
+}
+button {
+  background-color: var(--bgLightPink);
+  font-family: "retro_gamingregular";
   border-radius: 4px;
-  display: inline-block;
   cursor: pointer;
   color: var(--bgLight);
-  font-size: 12px;
+  font-size: 14px;
   padding: 7px 12px;
+  margin: 15px 0;
   text-decoration: none;
   border: none;
+  width: fit-content;
+}
+button:hover {
+  background-color: var(--bgDarkGreen);
 }
 
 h1 {
-  text-align: center;
+  font-size: 35px;
 }
-#game-set-up {
-  position: absolute;
-  width: 40vw;
-  padding: 50px;
+#header {
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  align-content: center;
+}
+#header:hover #noRotateB {
+  animation: moving 3s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+}
+#header:hover #rotateB {
+  transform-origin: center center;
+  animation: spin 3s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes moving {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 .container {
   display: flex;
@@ -63,41 +89,39 @@ h1 {
   /* margin-left: var(--leftMargin); */
   margin: 20px;
 }
-
+#game-set-up {
+  /* background-color: var(--bgLightPink); */
+  border: 5px dotted var(--bgLightPink);
+  position: absolute;
+  width: 30vw;
+  padding: 30px;
+}
 .grid-p1 {
   width: calc(16 * var(--gridCellSize));
   height: calc(16 * var(--gridCellSize));
   display: flex;
   flex-wrap: wrap;
-  /* background-color: blue; */
-  /* background-image: url(./assets/ocean.jpg); */
-  /* margin-left: var(--leftMargin);
-  margin: 20px; */
 }
-
-.grid div {
-  width: var(--gridCellSize);
-  height: var(--gridCellSize);
-}
-
 .grid-p2 {
   width: calc(16 * var(--gridCellSize));
   height: calc(16 * var(--gridCellSize));
   display: flex;
   flex-wrap: wrap;
-  /* background-color: blue; */
-  /* background-image: url(./assets/ocean.jpg); */
-  /* margin: 20px; */
+}
+.grid div {
+  width: var(--gridCellSize);
+  height: var(--gridCellSize);
+  background-repeat: no-repeat;
+  background-size: var(--gridCellSize) var(--gridCellSize);
 }
 
 .land {
-  background-image: url(./assets/ocean.jpg);
+  background-image: url(./assets/ground/greengrass.jpg);
 }
 
 .waste {
-  background-image: url(./assets/anchor.jpg);
+  background-image: url(./assets/toxic/pinkgrass.jpg);
 }
-
 
 .buttonHolder {
   margin: 0;
@@ -118,7 +142,7 @@ h1 {
   margin: 5px;
   width: calc(0.75 * var(--gridCellSize));
   height: calc(0.75 * var(--gridCellSize));
-  background-image: url(./assets/key.png);
+  background-image: url(./assets/instruction.png);
   object-fit: fill;
 }
 #key {
@@ -129,9 +153,9 @@ h1 {
   object-fit: fill;
 }
 .p1-grid-display {
-  width: calc(16 * var(--gridCellSize));
+  /* width: calc(16 * var(--gridCellSize)); */
   height: auto;
-  margin: 20px;
+  /* margin: 20px; */
   display: flex;
   flex-wrap: wrap;
   padding: 0;
@@ -139,9 +163,9 @@ h1 {
 }
 
 .p2-grid-display {
-  width: calc(16 * var(--gridCellSize));
+  /* width: calc(16 * var(--gridCellSize)); */
   height: auto;
-  margin: 20px;
+  /* margin: 20px; */
   display: flex;
   flex-wrap: wrap;
   padding: 0;
@@ -151,16 +175,18 @@ h1 {
 .p1-destroyer-container {
   width: calc(2 * var(--gridCellSize));
   height: var(--gridCellSize);
-  background-image: url(./assets/boat.png);
-  background-color: var(--destroyer);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
 .p1-destroyer-container-vertical {
   width: var(--gridCellSize);
   height: calc(2 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--destroyer);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -169,8 +195,9 @@ h1 {
 .p1-submarine-container {
   width: calc(3 * var(--gridCellSize));
   height: var(--gridCellSize);
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -178,8 +205,9 @@ h1 {
 .p1-submarine-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(3 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -188,8 +216,9 @@ h1 {
 .p1-cruiser-container {
   width: calc(3 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--cruise);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -197,8 +226,9 @@ h1 {
 .p1-cruiser-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(3 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -207,8 +237,9 @@ h1 {
 .p1-battleship-container {
   width: calc(4 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--battleship);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -216,8 +247,9 @@ h1 {
 .p1-battleship-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(4 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--battleship);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -226,8 +258,9 @@ h1 {
 .p1-carrier-container {
   width: calc(5 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--carrier);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -235,8 +268,9 @@ h1 {
 .p1-carrier-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(5 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--carrier);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -245,16 +279,18 @@ h1 {
 .p2-destroyer-container {
   width: calc(2 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--destroyer);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
 .p2-destroyer-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(2 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--destroyer);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -263,8 +299,9 @@ h1 {
 .p2-submarine-container {
   width: calc(3 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -272,8 +309,9 @@ h1 {
 .p2-submarine-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(3 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -282,8 +320,9 @@ h1 {
 .p2-cruiser-container {
   width: calc(3 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--cruise);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -291,8 +330,9 @@ h1 {
 .p2-cruiser-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(3 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--cruise);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -301,8 +341,9 @@ h1 {
 .p2-battleship-container {
   width: calc(4 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--battleship);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -310,8 +351,9 @@ h1 {
 .p2-battleship-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(4 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--battleship);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -320,8 +362,9 @@ h1 {
 .p2-carrier-container {
   width: calc(5 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--carrier);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -329,8 +372,9 @@ h1 {
 .p2-carrier-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(5 * var(--gridCellSize));
-  background-image: url(./assets/boat.png);
-  background-color: var(--carrier);
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -342,52 +386,57 @@ h1 {
 }
 
 .destroyer {
-  background-image: url(./assets/boat.png);
-  background-color: var(--destroyer);
-  object-fit: cover;
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
+  object-fit: contain;
 }
 
 .submarine {
-  background-image: url(./assets/boat.png);
-  background-color: var(--submarine);
-  object-fit: cover;
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
+  object-fit: contain;
 }
 
 .cruiser {
-  background-image: url(./assets/boat.png);
-  background-color: var(--cruise);
-  object-fit: cover;
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
+  object-fit: contain;
 }
 
 .battleship {
-  background-image: url(./assets/boat.png);
-  background-color: var(--battleship);
-  object-fit: cover;
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
+  object-fit: contain;
 }
 
 .carrier {
-  background-image: url(./assets/boat.png);
-  background-color: var(--carrier);
-  object-fit: cover;
+  background-image: url(./assets/ground/greencat.jpg);
+  background-size: var(--gridCellSize) var(--gridCellSize);
+  background-color: var(--bgLightPink);
+  object-fit: contain;
 }
 .entangled {
   /* background-color: grey; */
-  background-image: url(./assets/anchor2.png);
-  object-fit: cover;
+  background-image: url(./assets/ground/greenent.jpg);
+  object-fit: contain;
 }
 .hide {
-  background-image: url(./assets/ocean.jpg);
-  object-fit: cover;
+  background-image: url(./assets/ground/greengrass.jpg);
+  object-fit: contain;
 }
 .boom {
   z-index: 3;
   /* background-color: red; */
-  background-image: url(./assets/boom_target.jpg);
-  object-fit: cover;
+  background-image: url(./assets/ground/greensquish.jpg);
+  object-fit: contain;
 }
 
 .miss {
   /* background-color: black; */
-  background-image: url(./assets/miss_ocean.jpg);
-  object-fit: cover;
+  background-image: url(./assets/ground/greenmiss.jpg);
+  object-fit: contain;
 }
