@@ -70,7 +70,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   /* background-color: blue; */
-  background-image: url(./assets/ocean.jpg);
+  /* background-image: url(./assets/ocean.jpg); */
   /* margin-left: var(--leftMargin);
   margin: 20px; */
 }
@@ -86,9 +86,19 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   /* background-color: blue; */
-  background-image: url(./assets/ocean.jpg);
+  /* background-image: url(./assets/ocean.jpg); */
   /* margin: 20px; */
 }
+
+.land {
+  background-image: url(./assets/ocean.jpg);
+}
+
+.waste {
+  background-image: url(./assets/anchor.jpg);
+}
+
+
 .buttonHolder {
   margin: 0;
   /* width: 500px; */

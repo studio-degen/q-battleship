@@ -1,4 +1,4 @@
-function setup(client, room, shared, my, participants) {
+function setup(client, room, shared, my, participants, qdata) {
   const p1Grid = document.querySelector('.grid-p1'); //game grid for p1
   const p2Grid = document.querySelector('.grid-p2'); //game grid for p2
 
@@ -74,6 +74,9 @@ function setup(client, room, shared, my, participants) {
   let p1Squares = [];
   let p2Squares = [];
 
+  let terrain = [];
+  let p1CurrentMap = [[], []];
+  let p2CurrentMap = [[], []];
 
   let isHorizontal = true;
   let isGameOver = false;
@@ -90,6 +93,7 @@ function setup(client, room, shared, my, participants) {
   shared.startCount = 0;
   shared.currentPlayer = 'p1';
 
+
   //setting current turn to p1
   if(room.getHostName() === client.getUid()) {
     shared.currentTurn = "Player1";
@@ -103,15 +107,46 @@ function setup(client, room, shared, my, participants) {
   let totalShipCount = 2; //CHANGE TO 10 IN THE END
   const width = 16; //number of cells 
 
+  // qdata.shots.forEach((q) => {
+  //   console.log(q);
+  // });
+  //console.log(qdata.shots[0]);
+
+  for(var q=0; q<512; q++){
+    if(qdata.shots[q] == '11'){
+        terrain.push(false);
+    }else{
+        terrain.push(true);
+    }
+  }
+  //console.log(terrain[2]);
+
   //Create Board fn
   function createBoard(grid, squares, pname, states) {
     for (let i = 0; i < width*width; i++) {
       const square = document.createElement('div');
       if(pname == 'p1'){
         square.dataset.id = i;
+
+        if(terrain[i]){
+          square.classList.add("land");
+          p1CurrentMap[0].push(i);
+        }else{
+          square.classList.add("waste");
+          p1CurrentMap[1].push(i);
+        }
       }else if(pname == 'p2'){
         square.dataset.id = width*width + i;
+
+        if(terrain[i + width*width]){
+          square.classList.add("land");
+          p2CurrentMap[0].push(width*width + i);
+        }else{
+          square.classList.add("waste");
+          p2CurrentMap[0].push(width*width + i);
+        }
       }  
+      //square.classList.add("land");
       grid.appendChild(square);
       squares.push(square);
       states.push('false');
@@ -120,6 +155,7 @@ function setup(client, room, shared, my, participants) {
   createBoard(p1Grid, p1Squares, 'p1', shared.p1SquareStates); //board for p1
   createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates); //board for p2
 
+  //console.log(p1CurrentMap);
   //console.log("printing shared", shared);
 
   //Rotate the ships
@@ -244,8 +280,13 @@ function setup(client, room, shared, my, participants) {
     return bounds;
   }
 
-  let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
-  let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
+  //console.log(p1CurrentMap);
+  let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
+  let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
+  // p1CurrentMap[0].forEach((s) => {
+  //   p1horiBounds[1].push(s);
+  // });
+
 
   function p1DragDrop() {
           //console.log(calculateVertBounds(3));
@@ -274,20 +315,26 @@ function setup(client, room, shared, my, participants) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  }else if(shipClass == 'submarine') {
                     p1horiBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'battleship') {
+                  }else if(shipClass == 'cruiser') {
                     p1horiBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'carrier') {
+                  }else if(shipClass == 'battleship') {
                     p1horiBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    p1horiBounds[4].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
@@ -322,20 +369,26 @@ function setup(client, room, shared, my, participants) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  }else if(shipClass == 'submarine') {
                     p1vertBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'battleship') {
+                  }else if(shipClass == 'cruiser') {
                     p1vertBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'carrier') {
+                  }else if(shipClass == 'battleship') {
                     p1vertBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    p1vertBounds[4].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
@@ -404,8 +457,8 @@ function setup(client, room, shared, my, participants) {
   }
 
 
-  let p2horiBounds = [calculateHoriBounds(1, 'p2'), calculateHoriBounds(2, 'p2'), calculateHoriBounds(3, 'p2'), calculateHoriBounds(4, 'p2')];
-  let p2vertBounds = [calculateVertBounds(1, 'p2'), calculateVertBounds(2, 'p2'), calculateVertBounds(3, 'p2'), calculateVertBounds(4, 'p2')];
+  let p2horiBounds = [calculateHoriBounds(1, 'p2'), calculateHoriBounds(2, 'p2'), calculateHoriBounds(2, 'p2'), calculateHoriBounds(3, 'p2'), calculateHoriBounds(4, 'p2')];
+  let p2vertBounds = [calculateVertBounds(1, 'p2'), calculateVertBounds(2, 'p2'), calculateVertBounds(2, 'p2'), calculateVertBounds(3, 'p2'), calculateVertBounds(4, 'p2')];
 
   function p2DragDrop() {
           //console.log($(this).attr("data-id"), isHorizontal);
@@ -433,20 +486,26 @@ function setup(client, room, shared, my, participants) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  }else if(shipClass == 'submarine') {
                     p2horiBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'battleship') {
+                  }else if(shipClass == 'cruiser') {
                     p2horiBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'carrier') {
+                  }else if(shipClass == 'battleship') {
                     p2horiBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    p2horiBounds[4].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
@@ -481,20 +540,26 @@ function setup(client, room, shared, my, participants) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'submarine' || shipClass == 'cruiser') {
+                  }else if(shipClass == 'submarine') {
                     p2vertBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'battleship') {
+                  }else if(shipClass == 'cruiser') {
                     p2vertBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
-                  }else if(shipClass == 'carrier') {
+                  }else if(shipClass == 'battleship') {
                     p2vertBounds[3].forEach((b) => {
+                      if(b === temp) {
+                        boundHit = true;
+                      }
+                    });
+                  }else if(shipClass == 'carrier') {
+                    p2vertBounds[4].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }

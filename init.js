@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await client.whenReady();
     
         //create a room
-        room = new party.Room(client, "bs.tm.6", "main");
+        room = new party.Room(client, "bs.tm.7", "main");
         await room.whenReady();
     
         //join the room and remove any clients who are no longer present
@@ -43,8 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
             room.leave();
             client.close();
         });
+
+        let randomIndex = Math.floor(Math.random() * 10) + 1;
+        //console.log("./q-data/bell-0" + `${randomIndex}.json`);
+
+        $.getJSON( "./q-data/bell-00" + `${randomIndex}.json`, function( json ) {
+            //console.log(json.shots[1]);
+            setup(client, room, shared, my, participants, json);
+        });
     
-        setup(client, room, shared, my, participants);
         //record.watchShared(onChange);
     }
     
