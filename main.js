@@ -119,7 +119,7 @@ function setup(client, room, shared, my, participants, qdata) {
         terrain.push(true);
     }
   }
-  //console.log(terrain[2]);
+  console.log(terrain);
 
   //Create Board fn
   function createBoard(grid, squares, pname, states) {
@@ -280,12 +280,74 @@ function setup(client, room, shared, my, participants, qdata) {
     return bounds;
   }
 
-  //console.log(p1CurrentMap);
+  console.log(p1CurrentMap);
   let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
   let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
-  // p1CurrentMap[0].forEach((s) => {
-  //   p1horiBounds[1].push(s);
+
+
+
+  function addTerrainBounds(player, ship, isHorizontal){
+    let notTerrain = [];
+
+    if(player == 'p1'){
+      if(isHorizontal){
+        if(ship == 'submarine'){
+          p1CurrentMap[0].forEach((s) => {
+            p1horiBounds[1].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+1) && p1CurrentMap[1].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p1CurrentMap[1].forEach((s) => {
+            p1horiBounds[2].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+1) && p1CurrentMap[0].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      } else if (!isHorizontal){
+        if(ship == 'submarine'){
+          p1CurrentMap[0].forEach((s) => {
+            p1vertBounds[1].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+16) && p1CurrentMap[1].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p1CurrentMap[1].forEach((s) => {
+            p1vertBounds[2].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+16) && p1CurrentMap[0].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      }
+    }    
+
+    return notTerrain;
+  }
+
+  //let notTerrain = [];
+  // p1CurrentMap[1].forEach((s, index) => {
+  //   if(!(p1CurrentMap[1].includes(s+1) && p1CurrentMap[1].includes(s+2))){
+  //     notTerrain.push(s);
+  //   }
   // });
+  // p1CurrentMap[1].forEach((s, index) => {
+  //   if(!(p1CurrentMap[1].includes(s+16) && p1CurrentMap[1].includes(s+32))){
+  //     notTerrain.push(s);
+  //   }
+  // });
+  //console.log(notTerrain);
 
 
   function p1DragDrop() {
@@ -308,6 +370,8 @@ function setup(client, room, shared, my, participants, qdata) {
                 temp = parseInt($(this).attr("data-id")) + i;
                 //console.log(temp);
 
+                let notTerrain;
+
                 if(i == 0) {
                   if(shipClass == 'destroyer') {
                     p1horiBounds[0].forEach((b) => {
@@ -316,12 +380,20 @@ function setup(client, room, shared, my, participants, qdata) {
                       }
                     });
                   }else if(shipClass == 'submarine') {
+                    notTerrain = addTerrainBounds('p1','submarine', true);
+                    notTerrain.forEach((n) => {
+                      p1horiBounds[1].push(n);
+                    });
                     p1horiBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
                   }else if(shipClass == 'cruiser') {
+                    notTerrain = addTerrainBounds('p1','cruiser', true);
+                    notTerrain.forEach((n) => {
+                      p1horiBounds[2].push(n);
+                    });
                     p1horiBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
@@ -362,6 +434,8 @@ function setup(client, room, shared, my, participants, qdata) {
                 temp = parseInt($(this).attr("data-id")) + (16 * i);
                 //console.log(temp);
 
+                let notTerrain;
+
                 if(i == 0) {
                   if(shipClass == 'destroyer') {
                     p1vertBounds[0].forEach((b) => {
@@ -370,12 +444,20 @@ function setup(client, room, shared, my, participants, qdata) {
                       }
                     });
                   }else if(shipClass == 'submarine') {
+                    notTerrain = addTerrainBounds('p1','submarine', false);
+                    notTerrain.forEach((n) => {
+                      p1vertBounds[1].push(n);
+                    });
                     p1vertBounds[1].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;
                       }
                     });
                   }else if(shipClass == 'cruiser') {
+                    notTerrain = addTerrainBounds('p1','cruiser', false);
+                    notTerrain.forEach((n) => {
+                      p1vertBounds[2].push(n);
+                    });
                     p1vertBounds[2].forEach((b) => {
                       if(b === temp) {
                         boundHit = true;

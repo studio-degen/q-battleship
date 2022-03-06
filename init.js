@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await client.whenReady();
     
         //create a room
-        room = new party.Room(client, "bs.tm.8", "main");
+        room = new party.Room(client, "bs.ar.3", "main");
         await room.whenReady();
     
         //join the room and remove any clients who are no longer present
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //console.log("./q-data/bell-0" + `${randomIndex}.json`);
 
         $.getJSON( "./q-data/bell-00" + `${randomIndex}.json`, function( json ) {
-            //console.log(json.shots[1]);
+            //console.log(json.shots);
             setup(client, room, shared, my, participants, json);
         });
     
