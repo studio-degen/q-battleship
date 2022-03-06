@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await client.whenReady();
     
         //create a room
-        room = new party.Room(client, "bs6", "main");
+        room = new party.Room(client, "bs.tm.6", "main");
         await room.whenReady();
     
         //join the room and remove any clients who are no longer present

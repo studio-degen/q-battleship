@@ -34,14 +34,14 @@ function setup(client, room, shared, my, participants) {
     gameInfo.style.left="50%"; 
     gameInfo.style.top="100px";
     p2Grid.style.opacity = 0; //can't see opponents grid
-    //console.log('you host')
+    console.log('you host')
   }else{ //checks whether you are player 2
     displayGrid1.style.opacity = 0; //can't see/move opponents ships
     displayGrid1.style.display = "none"; 
     gameInfo.style.top="100px";
     gameInfo.style.left=0; 
     p1Grid.style.opacity = 0; //can't see opponents grid
-    //console.log('you not host');
+    console.log('you not host');
   }
 
   //Q1: IS THIS JUST A CHECK?
@@ -84,6 +84,7 @@ function setup(client, room, shared, my, participants) {
   shared.p1ShipsPos = [[],[],[],[],[]];
   shared.p2ShipsPos = [[],[],[],[],[]];
   shared.entangledPoints = [[]];
+  shared.entangledCount = 0;
   shared.p1SquareStates = [];
   shared.p2SquareStates = [];
   shared.startCount = 0;
@@ -596,7 +597,7 @@ function setup(client, room, shared, my, participants) {
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
-    displaySquare();
+    //displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
@@ -676,17 +677,31 @@ function setup(client, room, shared, my, participants) {
     }
   }
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
-
     if(square.classList.contains('boom') || square.classList.contains('miss')) return;
-
-    if (square.classList.contains('taken') && square.classList.contains('entangled') && square.classList.contains('p1')){ //boom entangled squares. not working yet{
+    if (square.classList.contains('entangled') && turnState=='p1'){ //boom entangled squares. not working yet{
       square.classList.add('boom');
       playMusic("./assets/sounds/boom.wav");
+      //console.log("entangled found");
+      shipCount(square);
       for(let i=0; i<entangleMax; i++){
         if(square.classList.contains(i)){
           tempIndex = i;
-          //console.log("for p1: ", tempIndex);
-          boomEntangledPair(tempIndex);
+          //console.log("going to boom for p1: ", tempIndex);
+          boomEntangledPair(tempIndex,'p2');
+          break;
+        }
+      }
+    }
+    if (square.classList.contains('entangled') && turnState=='p2'){ //boom entangled squares. not working yet{
+      square.classList.add('boom');
+      playMusic("./assets/sounds/boom.wav");
+      console.log("entangled found");
+      shipCount(square);
+      for(let i=0; i<entangleMax; i++){
+        if(square.classList.contains(i)){
+          tempIndex = i;
+          //console.log("going to boom for p2: ", tempIndex);
+          boomEntangledPair(tempIndex,'p1');
           break;
         }
       }
@@ -700,7 +715,6 @@ function setup(client, room, shared, my, participants) {
       } else if(turnState == 'p1') {
         shared.p1SquareStates[index] = true;
       }
-
     } else {
       square.classList.add('miss');
       playMusic("./assets/sounds/miss.wav");
@@ -712,7 +726,6 @@ function setup(client, room, shared, my, participants) {
       }
 
     }
-
     // checkForWins();
     // playGame();
   }
@@ -765,7 +778,7 @@ function setup(client, room, shared, my, participants) {
 
 
   let entangleCount=0;
-  let entangleMax=0;
+  let entangleMax=2;
   let paired=false;
   let i=0;
   for(let i=0;i<entangleMax;i++){
@@ -786,7 +799,7 @@ function setup(client, room, shared, my, participants) {
       }
     })
     if(entanglePossible==true){
-      infoDisplay.innerHTML ="Commence Entanglement";
+      infoDisplay.innerHTML ="Double Click to Entangle";
       entangleBegin();
     }
   }
@@ -800,14 +813,14 @@ function setup(client, room, shared, my, participants) {
     }, 500);
   }
   function chooseEntanglePoints(){
-    
     p1Squares.forEach(square => square.addEventListener('dblclick', function(e){
       //console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
         square.classList.add('entangled');
         square.classList.add(entangleCount);
-        assignEntanglePair1();
+        shared.entangledCount++; //keeping track of how many points are entangled
+        assignEntanglePair1(entangleCount);
         entangleCount++;
         infoDisplay.innerHTML ="";
       }else if(entangleCount>=entangleMax){
@@ -823,7 +836,8 @@ function setup(client, room, shared, my, participants) {
         playMusic("./assets/sounds/entPlaced.wav");
         square.classList.add('entangled');
         square.classList.add(entangleCount);
-        assignEntanglePair2();
+        shared.entangledCount++; //keeping track of how many points are entangled
+        assignEntanglePair2(entangleCount);
         entangleCount++;
         infoDisplay.innerHTML ="";
       }else if(entangleCount>=entangleMax){
@@ -834,52 +848,56 @@ function setup(client, room, shared, my, participants) {
     }));
     
   }
-  function assignEntanglePair1(){
-    for(let i=0; i<p1Squares.length; i++){
-      if (p1Squares[i].classList.contains('entangled') && !p1Squares[i].classList.contains('sharedEnt')) {
-        shared.entangledPoints[entangleCount]=i;
-        p1Squares[i].classList.add('sharedEnt');
-      }
-    }
+  function assignEntanglePair1(index){
+    paired=false;
     randomPoint= Math.floor(Math.random() * (width*width));
     while(paired===false){
-      if (p2Squares[randomPoint].classList.contains('taken') && !p2Squares[randomPoint].classList.contains('entangled')){
-        p2Squares[randomPoint].classList.add('entangled');
-        p2Squares[randomPoint].classList.add(entangleCount);
-        break;
+    if (p2Squares[randomPoint].classList.contains('taken') && !p2Squares[randomPoint].classList.contains('entangled')){
+      p2Squares[randomPoint].classList.add('entangled');
+      p2Squares[randomPoint].classList.add(index);
+      console.log("assigned random for entCount", index);
+      paired=true;
+      break;
       }
       else
         randomPoint= Math.floor(Math.random() * (width*width));
     }
   }
-  function assignEntanglePair2(){
-    for(let i=0; i<p2Squares.length; i++){
-      if (p2Squares[i].classList.contains('entangled') && !p2Squares[i].classList.contains('sharedEnt')) {
-        shared.entangledPoints[entangleCount]=i;
-        p2Squares[i].classList.add('sharedEnt');
-      }
-    }
+  function assignEntanglePair2(index){
+    paired=false;
     randomPoint= Math.floor(Math.random() * (width*width));
     while(paired===false){
       if (p1Squares[randomPoint].classList.contains('taken') && !p1Squares[randomPoint].classList.contains('entangled')){
         p1Squares[randomPoint].classList.add('entangled');
-        p1Squares[randomPoint].classList.add(entangleCount);
+        p1Squares[randomPoint].classList.add(index);
+        //console.log("assigned random for entCount", index);
+        paired=true;
         break;
       }
       else
         randomPoint= Math.floor(Math.random() * (width*width));
     }
   }
-  function boomEntangledPair(i){
-    //console.log("for p2: ", i);
-    p2Squares.forEach(p2sqr => {
-      //console.log('ENTERED')
-      if(p2sqr.classList.contains(i)){
-        p2sqr.classList.add('boom');
-        playMusic("./assets/sounds/boom.wav");
-        //console.log("pair is blown");
-      }
-    })
+  function boomEntangledPair(i,p){
+    //console.log("booming thing with class", i, "for player ", p);
+    if(p=='p2'){
+      p2Squares.forEach(p2sqr => {
+        if(p2sqr.classList.contains(i)){
+          p2sqr.classList.add('boom');
+          playMusic("./assets/sounds/boom.wav");
+          shipCount(p2sqr);
+        }
+      })
+    }
+    else{
+      p1Squares.forEach(p1sqr => {
+        if(p1sqr.classList.contains(i)){
+          p1sqr.classList.add('boom');
+          playMusic("./assets/sounds/boom.wav");
+          shipCount(p1sqr);
+        }
+      })
+    }
   }
   entangleButton.addEventListener('click', checkEntanglePossible);
 
@@ -893,41 +911,37 @@ function setup(client, room, shared, my, participants) {
 
 
   let turnState = 'p1';
-  setInterval(()=> {
-    startCheck();
-    checkForWins();
-  }, 100);
-
   function begin(){
     shared.startCount++;
-    if(shared.entangledPoints[entangleMax-1]!= false){
+    if(shared.entangledCount>=(entangleMax*2)){
       entangleButton.removeEventListener('click', entangleBegin);
       rotateButton.style.display="none"; //remove button from view
       entangleButton.style.display="none"; //remove button from view
-      startButton.style.display="none"; //remove button from view
+      //console.log("game starts");
 
       displayGrid2.style.opacity = 0; //can't see see ship container
       displayGrid1.style.opacity = 0; //can't see ship container
 
       gameInfo.style.top = "85%"; gameInfo.style.left=0;
+      startCheck();
       
     }
     else
-      infoDisplay.innerHTML = 'Waiting for all ' + entangleMax + ' entangled squares'; 
+      infoDisplay.innerHTML = 'Waiting for all players to entangle ' + entangleMax + ' squares'; 
   }
-
   //check if everyone is ready to start playing
   function startCheck(){
     if(shared.startCount>=2){
-      turnGridDisplay();
+      startButton.style.display="none"; //remove button from view
       setInterval(()=> {
         playGame();
+        checkForWins();
+        turnGridDisplay();
       }, 100);
     }
     else if (shared.startCount==1)
       infoDisplay.innerHTML = 'Waiting for a player to start game'; 
   }
-
   //Game Logic
   function playGame() {
     //console.log(currentPlayer);
@@ -937,7 +951,6 @@ function setup(client, room, shared, my, participants) {
     else if (numberOfShipsDropped<totalShipCount)
       infoDisplay.innerHTML = 'All Ships Not Placed'
   }
-
   startButton.addEventListener('click', begin);
 
 
@@ -980,7 +993,6 @@ function gameClicks(){
         }
       }))
 }
-
 function revealSqChecked(sq,i,player,playNum){
   // turnDisplay.innerHTML = 'Player '+ shared.currentPlayer + ' Go';
   revealSquare(sq, player, i);
@@ -992,6 +1004,10 @@ function revealSqChecked(sq,i,player,playNum){
 
 
 /////////////////////////////////////////////////////////////////////// END GAME CHECKS + WIN SCREEN
+
+
+
+
 
 
   function shipCount(square){
@@ -1010,8 +1026,6 @@ function revealSqChecked(sq,i,player,playNum){
       if (square.classList.contains('carrier')) p2CarrierCount++;
     }
   }
-
-
   function checkForWins() {
     if (p1DestroyerCount === 2) {
       infoDisplay.innerHTML = 'You sunk player 1 \'s destroyer'
@@ -1064,11 +1078,12 @@ function revealSqChecked(sq,i,player,playNum){
       gameOver()
     }
   }
-  
   function gameOver() {
   isGameOver = true;
   startButton.removeEventListener('click', begin);
   }
+
+
 
 
 
