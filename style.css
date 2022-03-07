@@ -7,6 +7,7 @@
   --cyan: #00ffff;
   --leftMargin: 60px;
   --gridCellSize: 40px;
+  --instructSize: 50vh;
 }
 @font-face {
   font-family: "retro_gamingregular";
@@ -135,23 +136,56 @@ h1 {
 }
 .instructions {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 25px;
+  left: 5px;
   padding: 5px;
+  z-index: 20;
 }
-#instruct {
+.instruct {
   margin: 5px;
   width: calc(0.75 * var(--gridCellSize));
   height: calc(0.75 * var(--gridCellSize));
-  background-image: url(./assets/instruction.png);
-  object-fit: fill;
+  background-image: url(./assets/info.png);
+  background-repeat: no-repeat;
+  background-size: calc(0.75 * var(--gridCellSize));
 }
-#key {
+.instruct:hover {
+  opacity: 50%;
+}
+.instructContent {
+  margin-top: 20px;
+  width: var(--instructSize);
+  height: var(--instructSize);
+  background-color: var(--bgDarkGreen);
+  /* background-image: url(./assets/key.jpg); */
+  /* background-repeat: no-repeat;
+  background-size: var(--instructSize) var(--instructSize); */
+}
+#instructionButton {
+  z-index: 30;
+}
+.key {
   margin: 5px;
   width: calc(0.75 * var(--gridCellSize));
   height: calc(0.75 * var(--gridCellSize));
-  background-image: url(./assets/key.png);
-  object-fit: fill;
+  background-image: url(./assets/keyicon.png);
+  background-repeat: no-repeat;
+  background-size: calc(0.75 * var(--gridCellSize));
+}
+.key:hover {
+  opacity: 50%;
+}
+.keyContent {
+  /* position: absolute;
+  top: 20%;
+  left: 40%; */
+  /* z-index: 20; */
+  margin-top: 20px;
+  width: var(--instructSize);
+  height: var(--instructSize);
+  background-image: url(./assets/key.jpg);
+  background-repeat: no-repeat;
+  background-size: var(--instructSize) var(--instructSize);
 }
 .p1-grid-display {
   /* width: calc(16 * var(--gridCellSize)); */

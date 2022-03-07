@@ -762,7 +762,7 @@ function setup(client, room, shared, my, participants, qdata) {
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
-    displaySquare();
+    //displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
@@ -1285,6 +1285,96 @@ function revealSqChecked(sq,i,player,playNum){
 
 
 
+
+  
+  /////////////////////////////////////////////////////////////////////// INSTRUCTIONS
+
+
+
+
+  const pageKey = document.querySelector('.key'); //key
+  const pageKeyContent = document.querySelector('.keyContent'); //key content
+  const pageInstruct = document.querySelector('.instruct'); //instruction
+  const pageInstructContent = document.querySelector('.instructContent'); //instruction content
+  const prev = document.querySelector('#prev'); //instruction
+  const next = document.querySelector('#next'); //instruction content
+
+  let toggleKey = false;
+  let toggleInstruct = false;
+
+  pageKeyContent.style.opacity=0;
+  pageInstructContent.style.opacity=0;
+  pageKeyContent.style.display="none";
+  pageInstructContent.style.display="none";
+
+  var img = new Array("./assets/instructions/step1.jpg","./assets/instructions/step2.jpg","./assets/instructions/step3.jpg","./assets/instructions/step3.2.jpg","./assets/instructions/step4.jpg","./assets/instructions/step5.jpg","./assets/instructions/step6.jpg","./assets/instructions/step7.jpg");
+
+  var imgElement = document.getElementById("imgDemo");
+  let imgi = 0;
+  let imgLen = img.length;
+  
+  function checkKey(){
+    console.log(toggleKey)
+    if(toggleKey==false){
+      pageKeyContent.style.opacity="100%";
+      pageKeyContent.style.display="block";
+    }
+    else{
+      pageKeyContent.style.opacity=0;
+      pageKeyContent.style.display="none";
+    }
+    toggleKey=!toggleKey;
+  }
+
+  function checkInstruct(){
+    console.log("clicked Instruct")
+    if(toggleInstruct==false){
+      pageInstructContent.style.opacity="100%";
+      pageInstructContent.style.display="block";
+      
+    }
+    else{
+      pageInstructContent.style.opacity="0%";
+      pageInstructContent.style.display="none";
+    }
+    toggleInstruct=!toggleInstruct;
+
+  }
+
+function nextImg()
+{
+    if(imgi < imgLen-1)
+        {
+            imgi++;
+        }
+    else{
+            imgi=0;                
+        }
+
+        imgElement.src = img[imgi];                    
+}
+
+function prevImg()
+{
+    if(imgi > 0)
+        {
+            imgi--;
+        }
+    else
+    {
+        imgi = imgLen-1;
+    }
+        imgElement.src = img[imgi];                    
+}
+
+  pageKey.addEventListener('click', checkKey);
+  pageInstruct.addEventListener('click', checkInstruct);
+  prev.addEventListener('click', prevImg);
+  next.addEventListener('click', nextImg);
+
+
+  // pageInstruct.addEventListener('click', checkInstruct);
+  
 
   /////////////////////////////////////////////////////////////////////// FIN
 }
