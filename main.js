@@ -907,7 +907,7 @@ function setup(client, room, shared, my, participants, qdata) {
     // playGame();
   }
   function playMusic(url) {
-    //new Audio(url).play()
+    new Audio(url).play()
     return;
   }
 
@@ -932,8 +932,10 @@ function setup(client, room, shared, my, participants, qdata) {
           }
         }else {
           if(p1Squares[index].classList.contains('land')){
+            p1Squares[index].classList.remove('land');
             p1Squares[index].classList.add('greenmiss');
           }else if(p1Squares[index].classList.contains('waste')){
+            p1Squares[index].classList.remove('waste');
             p1Squares[index].classList.add('pinkmiss');
           }
         }
@@ -951,8 +953,10 @@ function setup(client, room, shared, my, participants, qdata) {
           }
         }else{
           if(p2Squares[index].classList.contains('land')){
+            p2Squares[index].classList.remove('land');
             p2Squares[index].classList.add('greenmiss');
           }else if(p2Squares[index].classList.contains('waste')){
+            p2Squares[index].classList.remove('waste');
             p2Squares[index].classList.add('pinkmiss');
           }
         }

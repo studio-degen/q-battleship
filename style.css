@@ -212,7 +212,6 @@ h1 {
   height: var(--gridCellSize);
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -221,7 +220,6 @@ h1 {
   height: calc(2 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -232,7 +230,6 @@ h1 {
   height: var(--gridCellSize);
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -242,7 +239,6 @@ h1 {
   height: calc(3 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -253,7 +249,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -263,7 +258,6 @@ h1 {
   height: calc(3 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -274,7 +268,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -284,7 +277,6 @@ h1 {
   height: calc(4 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -295,7 +287,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -305,7 +296,6 @@ h1 {
   height: calc(5 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -316,7 +306,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -325,7 +314,6 @@ h1 {
   height: calc(2 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -336,7 +324,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -346,7 +333,6 @@ h1 {
   height: calc(3 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -357,7 +343,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -367,7 +352,6 @@ h1 {
   height: calc(3 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -378,7 +362,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -388,7 +371,6 @@ h1 {
   height: calc(4 * var(--gridCellSize));
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -399,7 +381,6 @@ h1 {
   height: calc(1 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
 }
@@ -409,7 +390,6 @@ h1 {
   height: calc(5 * var(--gridCellSize));
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
   margin: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -424,37 +404,38 @@ h1 {
 .destroyer {
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
+  background-color: var(--bgDarkGreen);
   object-fit: contain;
 }
 
 .submarine {
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
+  background-color: var(--bgDarkPurple);
   object-fit: contain;
 }
 
 .cruiser {
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
+  background-color: var(--bgDarkGreen);
   object-fit: contain;
 }
 
 .battleship {
   background-image: url(./assets/toxic/pinkcat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
+  background-color: var(--bgDarkPurple);
   object-fit: contain;
 }
 
 .carrier {
   background-image: url(./assets/ground/greencat.png);
   background-size: var(--gridCellSize) var(--gridCellSize);
-  background-color: var(--bgLightPink);
+  background-color: var(--bgDarkGreen);
   object-fit: contain;
 }
+
 .entangled {
   /* background-color: grey; */
   background-image: url(./assets/ground/greenent.png);
@@ -462,21 +443,21 @@ h1 {
 }
 .dentangled {
   /* background-color: grey; */
-  background-image: url(./assets/toxic/pinkcatent.jpg);
+  background-image: url(./assets/toxic/pinkent.png);
   object-fit: contain;
 }
 
 .entboom {
   z-index: 3;
   /* background-color: red; */
-  background-image: url(./assets/ground/greenent.jpg);
+  background-image: url(./assets/ground/greenentsquish.png);
   object-fit: contain;
 }
 
 .entdoom {
   z-index: 3;
   /* background-color: red; */
-  background-image: url(./assets/toxic/pinkent.jpg);
+  background-image: url(./assets/toxic/pinkentsquish.png);
   object-fit: contain;
 }
 
