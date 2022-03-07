@@ -154,6 +154,8 @@ function setup(client, room, shared, my, participants, qdata) {
   }
   createBoard(p1Grid, p1Squares, 'p1', shared.p1SquareStates); //board for p1
   createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates); //board for p2
+  //shared.p1SquareStates[1].push(p1CurrentMap);
+  //shared.p2SquareStates[1].push(p2CurrentMap);
 
   //console.log(p1CurrentMap);
   //console.log("printing shared", shared);
@@ -480,7 +482,7 @@ function setup(client, room, shared, my, participants, qdata) {
     return notTerrain;
   }
 
-  //console.log(p2CurrentMap);
+  console.log(p1CurrentMap, shared);
   let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
   let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
 
@@ -760,7 +762,7 @@ function setup(client, room, shared, my, participants, qdata) {
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
-    //displaySquare();
+    displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
@@ -912,8 +914,12 @@ function setup(client, room, shared, my, participants, qdata) {
       if(state == true){
         if(p1Squares[index].classList.contains('taken')){
           p1Squares[index].classList.add('boom');
-        }else{
-          p1Squares[index].classList.add('miss');
+        }else {
+          if(p1Squares[index].classList.contains('land')){
+            p1Squares[index].classList.add('greenmiss');
+          }else if(p1Squares[index].classList.contains('waste')){
+            p1Squares[index].classList.add('pinkmiss');
+          }
         }
         state = false;
       }
@@ -924,7 +930,11 @@ function setup(client, room, shared, my, participants, qdata) {
         if(p2Squares[index].classList.contains('taken')){
           p2Squares[index].classList.add('boom');
         }else{
-          p2Squares[index].classList.add('miss');
+          if(p2Squares[index].classList.contains('land')){
+            p2Squares[index].classList.add('greenmiss');
+          }else if(p2Squares[index].classList.contains('waste')){
+            p2Squares[index].classList.add('pinkmiss');
+          }
         }
         state = false;
       }

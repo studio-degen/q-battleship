@@ -435,8 +435,14 @@ h1 {
   object-fit: contain;
 }
 
-.miss {
+.greenmiss {
   /* background-color: black; */
   background-image: url(./assets/ground/greenmiss.jpg);
+  object-fit: contain;
+}
+
+.pinkmiss {
+  /* background-color: black; */
+  background-image: url(./assets/toxic/pinkmiss.jpg);
   object-fit: contain;
 }
