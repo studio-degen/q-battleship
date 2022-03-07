@@ -508,57 +508,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 let notTerrain;
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    notTerrain = addTerrainBounds('p1','destroyer', true);
-                    notTerrain.forEach((n) => {
-                      p1horiBounds[0].push(n);
-                    });
-                    p1horiBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    notTerrain = addTerrainBounds('p1','submarine', true);
-                    notTerrain.forEach((n) => {
-                      p1horiBounds[1].push(n);
-                    });
-                    p1horiBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    notTerrain = addTerrainBounds('p1','cruiser', true);
-                    notTerrain.forEach((n) => {
-                      p1horiBounds[2].push(n);
-                    });
-                    p1horiBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    notTerrain = addTerrainBounds('p1','battleship', true);
-                    notTerrain.forEach((n) => {
-                      p1horiBounds[3].push(n);
-                    });
-                    p1horiBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    notTerrain = addTerrainBounds('p1','carrier', true);
-                    notTerrain.forEach((n) => {
-                      p1horiBounds[4].push(n);
-                    });
-                    p1horiBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p1', ship, true);
+                      notTerrain.forEach((n) => {
+                        p1horiBounds[index].push(n);
+                      });
+                      p1horiBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -584,57 +547,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 let notTerrain;
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    notTerrain = addTerrainBounds('p1','destroyer', false);
-                    notTerrain.forEach((n) => {
-                      p1vertBounds[0].push(n);
-                    });
-                    p1vertBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    notTerrain = addTerrainBounds('p1','submarine', false);
-                    notTerrain.forEach((n) => {
-                      p1vertBounds[1].push(n);
-                    });
-                    p1vertBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    notTerrain = addTerrainBounds('p1','cruiser', false);
-                    notTerrain.forEach((n) => {
-                      p1vertBounds[2].push(n);
-                    });
-                    p1vertBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    notTerrain = addTerrainBounds('p1','battleship', false);
-                    notTerrain.forEach((n) => {
-                      p1vertBounds[3].push(n);
-                    });
-                    p1vertBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    notTerrain = addTerrainBounds('p1','carrier', false);
-                    notTerrain.forEach((n) => {
-                      p1vertBounds[4].push(n);
-                    });
-                    p1vertBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p1', ship, false);
+                      notTerrain.forEach((n) => {
+                        p1vertBounds[index].push(n);
+                      });
+                      p1vertBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -663,37 +589,19 @@ function setup(client, room, shared, my, participants, qdata) {
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
-            if(classes[1] == 'p1-destroyer-container') {
-              shared.p1placed[0] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[0].push(tempPlaces[j]);
+
+            shipNames.forEach((ship, index) => {
+              if(classes[1] == 'p1-'+ship+'-container') {
+                shared.p1placed[index] = true;
+                for (let j = 0; j < tempPlaces.length; j++) {
+                    shared.p1ShipsPos[index].push(tempPlaces[j]);
+                }
               }
-            //console.log(shared, participants);
-            } else if(classes[1] == 'p1-submarine-container') {
-              shared.p1placed[1] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[1].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-cruiser-container') {
-              shared.p1placed[2] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[2].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-battleship-container') {
-              shared.p1placed[3] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[3].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-carrier-container') {
-              shared.p1placed[4] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[4].push(tempPlaces[j]);
-              }
-            }
+            });
             
             displayGrid1.removeChild(draggedShip);
           }
-          //console.log(p1horiBounds);
+          //console.log(shared);
 
   }
 
@@ -721,57 +629,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 //console.log(temp);
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    notTerrain = addTerrainBounds('p2','destroyer', true);
-                    notTerrain.forEach((n) => {
-                      p2horiBounds[0].push(n);
-                    });
-                    p2horiBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    notTerrain = addTerrainBounds('p2','submarine', true);
-                    notTerrain.forEach((n) => {
-                      p2horiBounds[1].push(n);
-                    });
-                    p2horiBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    notTerrain = addTerrainBounds('p2','cruiser', true);
-                    notTerrain.forEach((n) => {
-                      p2horiBounds[2].push(n);
-                    });
-                    p2horiBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    notTerrain = addTerrainBounds('p2','battleship', true);
-                    notTerrain.forEach((n) => {
-                      p2horiBounds[3].push(n);
-                    });
-                    p2horiBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    notTerrain = addTerrainBounds('p2','carrier', true);
-                    notTerrain.forEach((n) => {
-                      p2horiBounds[4].push(n);
-                    });
-                    p2horiBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p2', ship, true);
+                      notTerrain.forEach((n) => {
+                        p2horiBounds[index].push(n);
+                      });
+                      p2horiBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -795,57 +666,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 //console.log(temp);
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    notTerrain = addTerrainBounds('p2','destroyer', false);
-                    notTerrain.forEach((n) => {
-                      p2vertBounds[0].push(n);
-                    });
-                    p2vertBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    notTerrain = addTerrainBounds('p2','submarine', false);
-                    notTerrain.forEach((n) => {
-                      p2vertBounds[1].push(n);
-                    });
-                    p2vertBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    notTerrain = addTerrainBounds('p2','cruiser', false);
-                    notTerrain.forEach((n) => {
-                      p2vertBounds[2].push(n);
-                    });
-                    p2vertBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    notTerrain = addTerrainBounds('p2','battleship', false);
-                    notTerrain.forEach((n) => {
-                      p2vertBounds[3].push(n);
-                    });
-                    p2vertBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    notTerrain = addTerrainBounds('p2','carrier', false);
-                    notTerrain.forEach((n) => {
-                      p2vertBounds[4].push(n);
-                    });
-                    p2vertBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p2', ship, false);
+                      notTerrain.forEach((n) => {
+                        p2vertBounds[index].push(n);
+                      });
+                      p2vertBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -872,32 +706,15 @@ function setup(client, room, shared, my, participants, qdata) {
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
-            if(classes[1] == 'p2-destroyer-container') {
-              shared.p2placed[0] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[0].push(tempPlaces[j]);
+
+            shipNames.forEach((ship, index) => {
+              if(classes[1] == 'p2-'+ship+'-container') {
+                shared.p2placed[index] = true;
+                for (let j = 0; j < tempPlaces.length; j++) {
+                    shared.p2ShipsPos[index].push(tempPlaces[j]);
+                }
               }
-            } else if(classes[1] == 'p2-submarine-container') {
-              shared.p2placed[1] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[1].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-cruiser-container') {
-              shared.p2placed[2] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[2].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-battleship-container') {
-              shared.p2placed[3] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[3].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-carrier-container') {
-              shared.p2placed[4] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[4].push(tempPlaces[j]);
-              } 
-            }
+            });
 
             displayGrid2.removeChild(draggedShip);
           }
