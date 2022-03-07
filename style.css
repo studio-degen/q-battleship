@@ -20,6 +20,7 @@ body {
   font-family: "retro_gamingregular";
   background-color: var(--bgDarkPurple);
   color: var(--yellow);
+  margin: 0;
 }
 button {
   background-color: var(--bgLightPink);
@@ -440,3 +441,21 @@ h1 {
   background-image: url(./assets/ground/greenmiss.jpg);
   object-fit: contain;
 }
+/* #introScreen {
+  background-color: var(--cyan);
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+}
+#gameScreen {
+  background-color: var(--bgLightPink);
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+}
+#winScreen {
+  background-color: var(--bgLightGreen);
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
+} */
