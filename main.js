@@ -119,7 +119,7 @@ function setup(client, room, shared, my, participants, qdata) {
         terrain.push(true);
     }
   }
-  //console.log(terrain[2]);
+  //console.log(terrain);
 
   //Create Board fn
   function createBoard(grid, squares, pname, states) {
@@ -143,7 +143,7 @@ function setup(client, room, shared, my, participants, qdata) {
           p2CurrentMap[0].push(width*width + i);
         }else{
           square.classList.add("waste");
-          p2CurrentMap[0].push(width*width + i);
+          p2CurrentMap[1].push(width*width + i);
         }
       }  
       //square.classList.add("land");
@@ -154,6 +154,8 @@ function setup(client, room, shared, my, participants, qdata) {
   }
   createBoard(p1Grid, p1Squares, 'p1', shared.p1SquareStates); //board for p1
   createBoard(p2Grid, p2Squares, 'p2', shared.p2SquareStates); //board for p2
+  //shared.p1SquareStates[1].push(p1CurrentMap);
+  //shared.p2SquareStates[1].push(p2CurrentMap);
 
   //console.log(p1CurrentMap);
   //console.log("printing shared", shared);
@@ -280,12 +282,209 @@ function setup(client, room, shared, my, participants, qdata) {
     return bounds;
   }
 
-  //console.log(p1CurrentMap);
+  function addTerrainBounds(player, ship, isHorizontal){
+    let notTerrain = [];
+
+    if(player == 'p1'){
+      if(isHorizontal){
+        if(ship == 'destroyer'){
+          p1CurrentMap[1].forEach((s) => {
+            p1horiBounds[0].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+1))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'submarine'){
+          p1CurrentMap[0].forEach((s) => {
+            p1horiBounds[1].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+1) && p1CurrentMap[1].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p1CurrentMap[1].forEach((s) => {
+            p1horiBounds[2].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+1) && p1CurrentMap[0].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'battleship'){
+          p1CurrentMap[0].forEach((s) => {
+            p1horiBounds[3].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+1) && p1CurrentMap[1].includes(s+2) && p1CurrentMap[1].includes(s+3))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'carrier'){
+          p1CurrentMap[1].forEach((s) => {
+            p1horiBounds[4].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+1) && p1CurrentMap[0].includes(s+2) && p1CurrentMap[0].includes(s+3) && p1CurrentMap[0].includes(s+4))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      } else if (!isHorizontal){
+        if(ship == 'destroyer'){
+          p1CurrentMap[1].forEach((s) => {
+            p1vertBounds[0].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+16))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'submarine'){
+          p1CurrentMap[0].forEach((s) => {
+            p1vertBounds[1].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+16) && p1CurrentMap[1].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p1CurrentMap[1].forEach((s) => {
+            p1vertBounds[2].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+16) && p1CurrentMap[0].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'battleship'){
+          p1CurrentMap[0].forEach((s) => {
+            p1vertBounds[3].push(s);
+          });
+          p1CurrentMap[1].forEach((s) => {
+            if(!(p1CurrentMap[1].includes(s+16) && p1CurrentMap[1].includes(s+32) && p1CurrentMap[1].includes(s+48))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'carrier'){
+          p1CurrentMap[1].forEach((s) => {
+            p1vertBounds[4].push(s);
+          });
+          p1CurrentMap[0].forEach((s) => {
+            if(!(p1CurrentMap[0].includes(s+16) && p1CurrentMap[0].includes(s+32) && p1CurrentMap[0].includes(s+48) && p1CurrentMap[0].includes(s+64))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      }
+    }else if(player == 'p2'){
+      if(isHorizontal){
+        if(ship == 'destroyer'){
+          p2CurrentMap[1].forEach((s) => {
+            p2horiBounds[0].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+1))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'submarine'){
+          p2CurrentMap[0].forEach((s) => {
+            p2horiBounds[1].push(s);
+          });
+          p2CurrentMap[1].forEach((s) => {
+            if(!(p2CurrentMap[1].includes(s+1) && p2CurrentMap[1].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p2CurrentMap[1].forEach((s) => {
+            p2horiBounds[2].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+1) && p2CurrentMap[0].includes(s+2))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'battleship'){
+          p2CurrentMap[0].forEach((s) => {
+            p2horiBounds[3].push(s);
+          });
+          p2CurrentMap[1].forEach((s) => {
+            if(!(p2CurrentMap[1].includes(s+1) && p2CurrentMap[1].includes(s+2) && p2CurrentMap[1].includes(s+3))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'carrier'){
+          p2CurrentMap[1].forEach((s) => {
+            p2horiBounds[4].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+1) && p2CurrentMap[0].includes(s+2) && p2CurrentMap[0].includes(s+3) && p2CurrentMap[0].includes(s+4))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      } else if (!isHorizontal){
+        if(ship == 'destroyer'){
+          p2CurrentMap[1].forEach((s) => {
+            p2vertBounds[0].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+16))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'submarine'){
+          p2CurrentMap[0].forEach((s) => {
+            p2vertBounds[1].push(s);
+          });
+          p2CurrentMap[1].forEach((s) => {
+            if(!(p2CurrentMap[1].includes(s+16) && p2CurrentMap[1].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'cruiser'){
+          p2CurrentMap[1].forEach((s) => {
+            p2vertBounds[2].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+16) && p2CurrentMap[0].includes(s+32))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'battleship'){
+          p2CurrentMap[0].forEach((s) => {
+            p2vertBounds[3].push(s);
+          });
+          p2CurrentMap[1].forEach((s) => {
+            if(!(p2CurrentMap[1].includes(s+16) && p2CurrentMap[1].includes(s+32) && p2CurrentMap[1].includes(s+48))){
+              notTerrain.push(s);
+            }
+          });
+        }else if(ship == 'carrier'){
+          p2CurrentMap[1].forEach((s) => {
+            p2vertBounds[4].push(s);
+          });
+          p2CurrentMap[0].forEach((s) => {
+            if(!(p2CurrentMap[0].includes(s+16) && p2CurrentMap[0].includes(s+32) && p2CurrentMap[0].includes(s+48) && p2CurrentMap[0].includes(s+64))){
+              notTerrain.push(s);
+            }
+          });
+        }
+      }
+    }  
+
+    return notTerrain;
+  }
+
+  console.log(p1CurrentMap, shared);
   let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
   let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
-  // p1CurrentMap[0].forEach((s) => {
-  //   p1horiBounds[1].push(s);
-  // });
 
 
   function p1DragDrop() {
@@ -308,38 +507,23 @@ function setup(client, room, shared, my, participants, qdata) {
                 temp = parseInt($(this).attr("data-id")) + i;
                 //console.log(temp);
 
+                let notTerrain;
+
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    p1horiBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    p1horiBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    p1horiBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    p1horiBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    p1horiBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p1', ship, true);
+                      notTerrain.forEach((n) => {
+                        p1horiBounds[index].push(n);
+                      });
+                      p1horiBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -362,38 +546,23 @@ function setup(client, room, shared, my, participants, qdata) {
                 temp = parseInt($(this).attr("data-id")) + (16 * i);
                 //console.log(temp);
 
+                let notTerrain;
+
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    p1vertBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    p1vertBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    p1vertBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    p1vertBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    p1vertBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p1', ship, false);
+                      notTerrain.forEach((n) => {
+                        p1vertBounds[index].push(n);
+                      });
+                      p1vertBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -422,37 +591,19 @@ function setup(client, room, shared, my, participants, qdata) {
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
-            if(classes[1] == 'p1-destroyer-container') {
-              shared.p1placed[0] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[0].push(tempPlaces[j]);
+
+            shipNames.forEach((ship, index) => {
+              if(classes[1] == 'p1-'+ship+'-container') {
+                shared.p1placed[index] = true;
+                for (let j = 0; j < tempPlaces.length; j++) {
+                    shared.p1ShipsPos[index].push(tempPlaces[j]);
+                }
               }
-            //console.log(shared, participants);
-            } else if(classes[1] == 'p1-submarine-container') {
-              shared.p1placed[1] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[1].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-cruiser-container') {
-              shared.p1placed[2] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[2].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-battleship-container') {
-              shared.p1placed[3] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[3].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p1-carrier-container') {
-              shared.p1placed[4] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p1ShipsPos[4].push(tempPlaces[j]);
-              }
-            }
+            });
             
             displayGrid1.removeChild(draggedShip);
           }
-          //console.log(p1horiBounds);
+          //console.log(shared);
 
   }
 
@@ -480,37 +631,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 //console.log(temp);
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    p2horiBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    p2horiBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    p2horiBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    p2horiBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    p2horiBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p2', ship, true);
+                      notTerrain.forEach((n) => {
+                        p2horiBounds[index].push(n);
+                      });
+                      p2horiBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -534,37 +668,20 @@ function setup(client, room, shared, my, participants, qdata) {
                 //console.log(temp);
 
                 if(i == 0) {
-                  if(shipClass == 'destroyer') {
-                    p2vertBounds[0].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'submarine') {
-                    p2vertBounds[1].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'cruiser') {
-                    p2vertBounds[2].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'battleship') {
-                    p2vertBounds[3].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }else if(shipClass == 'carrier') {
-                    p2vertBounds[4].forEach((b) => {
-                      if(b === temp) {
-                        boundHit = true;
-                      }
-                    });
-                  }
+
+                  shipNames.forEach((ship, index) => {
+                    if(shipClass == ship) {
+                      notTerrain = addTerrainBounds('p2', ship, false);
+                      notTerrain.forEach((n) => {
+                        p2vertBounds[index].push(n);
+                      });
+                      p2vertBounds[index].forEach((b) => {
+                        if(b === temp) {
+                          boundHit = true;
+                        }
+                      });
+                    }
+                  });
                   
                 }
 
@@ -591,32 +708,15 @@ function setup(client, room, shared, my, participants, qdata) {
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
-            if(classes[1] == 'p2-destroyer-container') {
-              shared.p2placed[0] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[0].push(tempPlaces[j]);
+
+            shipNames.forEach((ship, index) => {
+              if(classes[1] == 'p2-'+ship+'-container') {
+                shared.p2placed[index] = true;
+                for (let j = 0; j < tempPlaces.length; j++) {
+                    shared.p2ShipsPos[index].push(tempPlaces[j]);
+                }
               }
-            } else if(classes[1] == 'p2-submarine-container') {
-              shared.p2placed[1] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[1].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-cruiser-container') {
-              shared.p2placed[2] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[2].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-battleship-container') {
-              shared.p2placed[3] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[3].push(tempPlaces[j]);
-              }
-            } else if(classes[1] == 'p2-carrier-container') {
-              shared.p2placed[4] = true;
-              for (let j = 0; j < tempPlaces.length; j++) {
-                  shared.p2ShipsPos[4].push(tempPlaces[j]);
-              } 
-            }
+            });
 
             displayGrid2.removeChild(draggedShip);
           }
@@ -721,7 +821,7 @@ function setup(client, room, shared, my, participants, qdata) {
   function displaySquare(){
     if(room.getHostName() === client.getUid()){
       p2Squares.forEach((square, index) => {
-        if (square.classList.contains('boom') || square.classList.contains('miss')){
+        if (square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')){
           revealSquare(square, 'p2', index);
         }
         else{
@@ -731,7 +831,7 @@ function setup(client, room, shared, my, participants, qdata) {
     }
     else{
       p1Squares.forEach((square, index) => {
-        if (square.classList.contains('boom') || square.classList.contains('miss')){
+        if (square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')){
           square.classList.remove('hide');
           revealSquare(square, 'p1', index);
         }
@@ -742,9 +842,13 @@ function setup(client, room, shared, my, participants, qdata) {
     }
   }
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
-    if(square.classList.contains('boom') || square.classList.contains('miss')) return;
+    if(square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')) return;
     if (square.classList.contains('entangled') && turnState=='p1'){ //boom entangled squares. not working yet{
-      square.classList.add('boom');
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        square.classList.add('doom');
+      }else{
+        square.classList.add('boom');
+      }
       playMusic("./assets/sounds/boom.wav");
       //console.log("entangled found");
       shipCount(square);
@@ -772,7 +876,11 @@ function setup(client, room, shared, my, participants, qdata) {
       }
     }
     else if(square.classList.contains('taken')) { 
-      square.classList.add('boom');
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        square.classList.add('doom');
+      }else{
+        square.classList.add('boom');
+      }
       playMusic("./assets/sounds/boom.wav");
       shipCount(square);
       if(turnState == 'p2') {
@@ -813,9 +921,17 @@ function setup(client, room, shared, my, participants, qdata) {
     shared.p1SquareStates.forEach((state, index) => {
       if(state == true){
         if(p1Squares[index].classList.contains('taken')){
-          p1Squares[index].classList.add('boom');
-        }else{
-          p1Squares[index].classList.add('miss');
+          if(p1Squares[index].classList.contains('submarine') || p1Squares[index].classList.contains('battleship')){
+            p1Squares[index].classList.add('doom');
+          }else{
+            p1Squares[index].classList.add('boom');
+          }
+        }else {
+          if(p1Squares[index].classList.contains('land')){
+            p1Squares[index].classList.add('greenmiss');
+          }else if(p1Squares[index].classList.contains('waste')){
+            p1Squares[index].classList.add('pinkmiss');
+          }
         }
         state = false;
       }
@@ -824,9 +940,17 @@ function setup(client, room, shared, my, participants, qdata) {
     shared.p2SquareStates.forEach((state, index) => {
       if(state == true){
         if(p2Squares[index].classList.contains('taken')){
-          p2Squares[index].classList.add('boom');
+          if(p2Squares[index].classList.contains('submarine') || p2Squares[index].classList.contains('battleship')){
+            p2Squares[index].classList.add('doom');
+          }else{
+            p2Squares[index].classList.add('boom');
+          }
         }else{
-          p2Squares[index].classList.add('miss');
+          if(p2Squares[index].classList.contains('land')){
+            p2Squares[index].classList.add('greenmiss');
+          }else if(p2Squares[index].classList.contains('waste')){
+            p2Squares[index].classList.add('pinkmiss');
+          }
         }
         state = false;
       }
@@ -948,7 +1072,11 @@ function setup(client, room, shared, my, participants, qdata) {
     if(p=='p2'){
       p2Squares.forEach(p2sqr => {
         if(p2sqr.classList.contains(i)){
-          p2sqr.classList.add('boom');
+          if(p2sqr.classList.contains('submarine') || p2sqr.classList.contains('battleship')){
+            p2sqr.classList.add('doom');
+          }else{
+            p2sqr.classList.add('boom');
+          }
           playMusic("./assets/sounds/boom.wav");
           shipCount(p2sqr);
         }
@@ -957,7 +1085,11 @@ function setup(client, room, shared, my, participants, qdata) {
     else{
       p1Squares.forEach(p1sqr => {
         if(p1sqr.classList.contains(i)){
-          p1sqr.classList.add('boom');
+          if(p1sqr.classList.contains('submarine') || p1sqr.classList.contains('battleship')){
+            p1sqr.classList.add('doom');
+          }else{
+            p1sqr.classList.add('boom');
+          }
           playMusic("./assets/sounds/boom.wav");
           shipCount(p1sqr);
         }
