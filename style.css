@@ -195,7 +195,7 @@ h1 {
 .p1-submarine-container {
   width: calc(3 * var(--gridCellSize));
   height: var(--gridCellSize);
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -237,7 +237,7 @@ h1 {
 .p1-battleship-container {
   width: calc(4 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -247,7 +247,7 @@ h1 {
 .p1-battleship-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(4 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -299,7 +299,7 @@ h1 {
 .p2-submarine-container {
   width: calc(3 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -309,7 +309,7 @@ h1 {
 .p2-submarine-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(3 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -341,7 +341,7 @@ h1 {
 .p2-battleship-container {
   width: calc(4 * var(--gridCellSize));
   height: calc(1 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -351,7 +351,7 @@ h1 {
 .p2-battleship-container-vertical {
   width: calc(1 * var(--gridCellSize));
   height: calc(4 * var(--gridCellSize));
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   margin: 10px;
@@ -393,7 +393,7 @@ h1 {
 }
 
 .submarine {
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   object-fit: contain;
@@ -407,7 +407,7 @@ h1 {
 }
 
 .battleship {
-  background-image: url(./assets/ground/greencat.jpg);
+  background-image: url(./assets/toxic/pinkcat.jpg);
   background-size: var(--gridCellSize) var(--gridCellSize);
   background-color: var(--bgLightPink);
   object-fit: contain;
@@ -421,7 +421,7 @@ h1 {
 }
 .entangled {
   /* background-color: grey; */
-  background-image: url(./assets/ground/greenent.jpg);
+  background-image: url(./assets/ground/greencatent.jpg);
   object-fit: contain;
 }
 .hide {
@@ -432,6 +432,12 @@ h1 {
   z-index: 3;
   /* background-color: red; */
   background-image: url(./assets/ground/greensquish.jpg);
+  object-fit: contain;
+}
+.doom {
+  z-index: 3;
+  /* background-color: red; */
+  background-image: url(./assets/toxic/pinksquish.jpg);
   object-fit: contain;
 }
 

@@ -821,7 +821,7 @@ function setup(client, room, shared, my, participants, qdata) {
   function displaySquare(){
     if(room.getHostName() === client.getUid()){
       p2Squares.forEach((square, index) => {
-        if (square.classList.contains('boom') || square.classList.contains('miss')){
+        if (square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')){
           revealSquare(square, 'p2', index);
         }
         else{
@@ -831,7 +831,7 @@ function setup(client, room, shared, my, participants, qdata) {
     }
     else{
       p1Squares.forEach((square, index) => {
-        if (square.classList.contains('boom') || square.classList.contains('miss')){
+        if (square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')){
           square.classList.remove('hide');
           revealSquare(square, 'p1', index);
         }
@@ -842,9 +842,13 @@ function setup(client, room, shared, my, participants, qdata) {
     }
   }
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
-    if(square.classList.contains('boom') || square.classList.contains('miss')) return;
+    if(square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')) return;
     if (square.classList.contains('entangled') && turnState=='p1'){ //boom entangled squares. not working yet{
-      square.classList.add('boom');
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        square.classList.add('doom');
+      }else{
+        square.classList.add('boom');
+      }
       playMusic("./assets/sounds/boom.wav");
       //console.log("entangled found");
       shipCount(square);
@@ -872,7 +876,11 @@ function setup(client, room, shared, my, participants, qdata) {
       }
     }
     else if(square.classList.contains('taken')) { 
-      square.classList.add('boom');
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        square.classList.add('doom');
+      }else{
+        square.classList.add('boom');
+      }
       playMusic("./assets/sounds/boom.wav");
       shipCount(square);
       if(turnState == 'p2') {
@@ -913,7 +921,11 @@ function setup(client, room, shared, my, participants, qdata) {
     shared.p1SquareStates.forEach((state, index) => {
       if(state == true){
         if(p1Squares[index].classList.contains('taken')){
-          p1Squares[index].classList.add('boom');
+          if(p1Squares[index].classList.contains('submarine') || p1Squares[index].classList.contains('battleship')){
+            p1Squares[index].classList.add('doom');
+          }else{
+            p1Squares[index].classList.add('boom');
+          }
         }else {
           if(p1Squares[index].classList.contains('land')){
             p1Squares[index].classList.add('greenmiss');
@@ -928,7 +940,11 @@ function setup(client, room, shared, my, participants, qdata) {
     shared.p2SquareStates.forEach((state, index) => {
       if(state == true){
         if(p2Squares[index].classList.contains('taken')){
-          p2Squares[index].classList.add('boom');
+          if(p2Squares[index].classList.contains('submarine') || p2Squares[index].classList.contains('battleship')){
+            p2Squares[index].classList.add('doom');
+          }else{
+            p2Squares[index].classList.add('boom');
+          }
         }else{
           if(p2Squares[index].classList.contains('land')){
             p2Squares[index].classList.add('greenmiss');
@@ -1056,7 +1072,11 @@ function setup(client, room, shared, my, participants, qdata) {
     if(p=='p2'){
       p2Squares.forEach(p2sqr => {
         if(p2sqr.classList.contains(i)){
-          p2sqr.classList.add('boom');
+          if(p2sqr.classList.contains('submarine') || p2sqr.classList.contains('battleship')){
+            p2sqr.classList.add('doom');
+          }else{
+            p2sqr.classList.add('boom');
+          }
           playMusic("./assets/sounds/boom.wav");
           shipCount(p2sqr);
         }
@@ -1065,7 +1085,11 @@ function setup(client, room, shared, my, participants, qdata) {
     else{
       p1Squares.forEach(p1sqr => {
         if(p1sqr.classList.contains(i)){
-          p1sqr.classList.add('boom');
+          if(p1sqr.classList.contains('submarine') || p1sqr.classList.contains('battleship')){
+            p1sqr.classList.add('doom');
+          }else{
+            p1sqr.classList.add('boom');
+          }
           playMusic("./assets/sounds/boom.wav");
           shipCount(p1sqr);
         }
