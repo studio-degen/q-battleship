@@ -843,11 +843,11 @@ function setup(client, room, shared, my, participants, qdata) {
   }
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
     if(square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')) return;
-    if (square.classList.contains('entangled') && turnState=='p1'){ //boom entangled squares. not working yet{
+    if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p1'){ //boom entangled squares. not working yet{
       if(square.classList.contains('submarine') || square.classList.contains('battleship')){
-        square.classList.add('doom');
+        square.classList.add('entdoom');
       }else{
-        square.classList.add('boom');
+        square.classList.add('entboom');
       }
       playMusic("./assets/sounds/boom.wav");
       //console.log("entangled found");
@@ -861,8 +861,12 @@ function setup(client, room, shared, my, participants, qdata) {
         }
       }
     }
-    if (square.classList.contains('entangled') && turnState=='p2'){ //boom entangled squares. not working yet{
-      square.classList.add('boom');
+    if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p2'){ //boom entangled squares. not working yet{
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        square.classList.add('entdoom');
+      }else{
+        square.classList.add('entboom');
+      }
       playMusic("./assets/sounds/boom.wav");
       console.log("entangled found");
       shipCount(square);
@@ -1004,9 +1008,13 @@ function setup(client, room, shared, my, participants, qdata) {
   function chooseEntanglePoints(){
     p1Squares.forEach(square => square.addEventListener('dblclick', function(e){
       //console.log(shared.entangledPoints);
-      if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
+      if (square.classList.contains('taken') && !square.classList.contains('entangled') && !square.classList.contains('dentangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
-        square.classList.add('entangled');
+        if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+          square.classList.add('dentangled');
+        }else{
+          square.classList.add('entangled');
+        }
         square.classList.add(entangleCount);
         shared.entangledCount++; //keeping track of how many points are entangled
         assignEntanglePair1(entangleCount);
@@ -1021,9 +1029,13 @@ function setup(client, room, shared, my, participants, qdata) {
 
     p2Squares.forEach(square => square.addEventListener('dblclick', function(e){
       //console.log(shared.entangledPoints);
-      if (square.classList.contains('taken') && !square.classList.contains('entangled') && entangleCount<entangleMax) {
+      if (square.classList.contains('taken') && !square.classList.contains('entangled') && !square.classList.contains('dentangled') && entangleCount<entangleMax) {
         playMusic("./assets/sounds/entPlaced.wav");
-        square.classList.add('entangled');
+        if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+          square.classList.add('dentangled');
+        }else{
+          square.classList.add('entangled');
+        }
         square.classList.add(entangleCount);
         shared.entangledCount++; //keeping track of how many points are entangled
         assignEntanglePair2(entangleCount);
@@ -1041,8 +1053,12 @@ function setup(client, room, shared, my, participants, qdata) {
     paired=false;
     randomPoint= Math.floor(Math.random() * (width*width));
     while(paired===false){
-    if (p2Squares[randomPoint].classList.contains('taken') && !p2Squares[randomPoint].classList.contains('entangled')){
-      p2Squares[randomPoint].classList.add('entangled');
+    if (p2Squares[randomPoint].classList.contains('taken') && !p2Squares[randomPoint].classList.contains('entangled') && !p2Squares[randomPoint].classList.contains('dentangled')){
+      if(p2Squares[randomPoint].classList.contains('submarine') || p2Squares[randomPoint].classList.contains('battleship')){
+        p2Squares[randomPoint].classList.add('dentangled');
+      }else{
+        p2Squares[randomPoint].classList.add('entangled');
+      }
       p2Squares[randomPoint].classList.add(index);
       console.log("assigned random for entCount", index);
       paired=true;
@@ -1057,7 +1073,11 @@ function setup(client, room, shared, my, participants, qdata) {
     randomPoint= Math.floor(Math.random() * (width*width));
     while(paired===false){
       if (p1Squares[randomPoint].classList.contains('taken') && !p1Squares[randomPoint].classList.contains('entangled')){
-        p1Squares[randomPoint].classList.add('entangled');
+        if(p1Squares[randomPoint].classList.contains('submarine') || p1Squares[randomPoint].classList.contains('battleship')){
+          p1Squares[randomPoint].classList.add('dentangled');
+        }else{
+          p1Squares[randomPoint].classList.add('entangled');
+        }
         p1Squares[randomPoint].classList.add(index);
         //console.log("assigned random for entCount", index);
         paired=true;

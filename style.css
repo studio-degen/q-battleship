@@ -460,6 +460,26 @@ h1 {
   background-image: url(./assets/ground/greenent.png);
   object-fit: contain;
 }
+.dentangled {
+  /* background-color: grey; */
+  background-image: url(./assets/toxic/pinkcatent.jpg);
+  object-fit: contain;
+}
+
+.entboom {
+  z-index: 3;
+  /* background-color: red; */
+  background-image: url(./assets/ground/greenent.jpg);
+  object-fit: contain;
+}
+
+.entdoom {
+  z-index: 3;
+  /* background-color: red; */
+  background-image: url(./assets/toxic/pinkent.jpg);
+  object-fit: contain;
+}
+
 .hide {
   background-image: url(./assets/ground/greengrass.png);
   object-fit: contain;
