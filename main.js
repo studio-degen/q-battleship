@@ -762,7 +762,7 @@ function setup(client, room, shared, my, participants, qdata) {
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
-    //displaySquare();
+    displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
     checkHitOrMiss();
