@@ -86,7 +86,8 @@ function setup(client, room, shared, my, participants, qdata) {
   shared.p2placed = [false, false, false, false, false];
   shared.p1ShipsPos = [[],[],[],[],[]];
   shared.p2ShipsPos = [[],[],[],[],[]];
-  shared.entangledPoints = [[]];
+  shared.entangledPoints = [[], []];
+  shared.entangledPos = [[], []];
   shared.entangledCount = 0;
   shared.p1SquareStates = [];
   shared.p2SquareStates = [];
@@ -157,7 +158,7 @@ function setup(client, room, shared, my, participants, qdata) {
   //shared.p1SquareStates[1].push(p1CurrentMap);
   //shared.p2SquareStates[1].push(p2CurrentMap);
 
-  //console.log(p1CurrentMap);
+  //console.log(p1Squares);
   //console.log("printing shared", shared);
 
   //Rotate the ships
@@ -482,7 +483,7 @@ function setup(client, room, shared, my, participants, qdata) {
     return notTerrain;
   }
 
-  console.log(p1CurrentMap, shared);
+  //console.log(p1CurrentMap, shared);
   let p1horiBounds = [calculateHoriBounds(1, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(2, 'p1'), calculateHoriBounds(3, 'p1'), calculateHoriBounds(4, 'p1')];
   let p1vertBounds = [calculateVertBounds(1, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(2, 'p1'), calculateVertBounds(3, 'p1'), calculateVertBounds(4, 'p1')];
 
@@ -582,12 +583,6 @@ function setup(client, room, shared, my, participants, qdata) {
             }
           }
           
-          //console.log(tempPlaces);
-          //let overlap = false;
-          for (let p = 0; p < shipPlaces.length; p++) {
-            //console.log('overlap');
-            shipPlaces[p].classList.add('taken', shipClass);
-          }
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
@@ -600,6 +595,13 @@ function setup(client, room, shared, my, participants, qdata) {
                 }
               }
             });
+
+          //console.log(tempPlaces);
+          //let overlap = false;
+          for (let p = 0; p < shipPlaces.length; p++) {
+            //console.log('overlap');
+            shipPlaces[p].classList.add('taken', shipClass);
+          }
             
             displayGrid1.removeChild(draggedShip);
           }
@@ -700,11 +702,6 @@ function setup(client, room, shared, my, participants, qdata) {
                 
             }
           }
-          
-          //console.log(shipPlaces);
-          for (let p = 0; p < shipPlaces.length; p++) {
-            shipPlaces[p].classList.add('taken', shipClass);      
-          }
 
           if(!boundHit){
             let classes = $(draggedShip).attr('class').split(/\s+/);
@@ -717,6 +714,11 @@ function setup(client, room, shared, my, participants, qdata) {
                 }
               }
             });
+
+          //console.log(shipPlaces);
+          for (let p = 0; p < shipPlaces.length; p++) {
+            shipPlaces[p].classList.add('taken', shipClass);      
+          }
 
             displayGrid2.removeChild(draggedShip);
           }
@@ -738,7 +740,7 @@ function setup(client, room, shared, my, participants, qdata) {
 
   //WHAT DOES THIS DO?
   //function to save and share the ship cell indexes to both players
-  function replaceShip(ship, posarray){
+  function syncShip(ship, posarray){
     let shipPlaces = [];
     let temp;
     let place;
@@ -757,23 +759,47 @@ function setup(client, room, shared, my, participants, qdata) {
     
   }
 
+  function syncEnts(posarray){
+    let entPlaces = [];
+    let temp;
+    let place;
+    for (let i = 0; i < posarray.length; i++) {
+      temp = posarray[i];
+      //console.log(temp);
+      place = document.querySelector(`[data-id='${temp}']`);
+      entPlaces.push(place);
+    }           
+    
+    console.log(entPlaces);
+    for (let p = 0; p < entPlaces.length; p++) {
+      if(entPlaces[p].classList.contains('submarine') || entPlaces[p].classList.contains('battleship')){
+        entPlaces[p].classList.add('dentangled'); 
+      }else{
+        entPlaces[p].classList.add('entangled'); 
+      }
+
+    }
+    //console.log(shared);
+    
+  }
+
   
   let p1ShipsPlaced = [false, false, false, false, false];
   let p2ShipsPlaced = [false, false, false, false, false];
 
   setInterval(() => {
-    displaySquare();
     checkP1ShipsPlaced();
     checkP2ShipsPlaced();
+    displaySquare();
     checkHitOrMiss();
-  }, 100);
+  }, 500);
 
   function checkP1ShipsPlaced() {
     if(!(room.getHostName() === client.getUid())){
       p1Ships.forEach((ship, index) => {
         if(shared.p1placed[index]){ //check that ship has been dragged onto board
           if(!(p1ShipsPlaced[index])){ //check if p1ShipsPlaced[index] is false
-            replaceShip(shipNames[index], shared.p1ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
+            syncShip(shipNames[index], shared.p1ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
             displayGrid1.removeChild(ship); 
             p1ShipsPlaced[index] = true;
           }
@@ -787,7 +813,7 @@ function setup(client, room, shared, my, participants, qdata) {
       p2Ships.forEach((ship, index) => {
         if(shared.p2placed[index]){ //check that ship has been dragged onto board
           if(!(p2ShipsPlaced[index])){ //check if p1ShipsPlaced[index] is false
-            replaceShip(shipNames[index], shared.p2ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
+            syncShip(shipNames[index], shared.p2ShipsPos[index]); //calls function to save and share the ship cell indexes to both players
             displayGrid2.removeChild(ship);
             p2ShipsPlaced[index] = true;
           }
@@ -818,6 +844,7 @@ function setup(client, room, shared, my, participants, qdata) {
   let p2CruiserCount = 0;
   let p2BattleshipCount = 0;
   let p2CarrierCount = 0;
+
   function displaySquare(){
     if(room.getHostName() === client.getUid()){
       p2Squares.forEach((square, index) => {
@@ -841,45 +868,11 @@ function setup(client, room, shared, my, participants, qdata) {
       })
     }
   }
+
   function revealSquare(square, turnState, index) { //when turnstate = p2, reveal square on p2grid
     if(square.classList.contains('boom') || square.classList.contains('doom') || square.classList.contains('miss')) return;
-    if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p1'){ //boom entangled squares. not working yet{
-      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
-        square.classList.add('entdoom');
-      }else{
-        square.classList.add('entboom');
-      }
-      playMusic("./assets/sounds/boom.wav");
-      //console.log("entangled found");
-      shipCount(square);
-      for(let i=0; i<entangleMax; i++){
-        if(square.classList.contains(i)){
-          tempIndex = i;
-          //console.log("going to boom for p1: ", tempIndex);
-          boomEntangledPair(tempIndex,'p2');
-          break;
-        }
-      }
-    }
-    if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p2'){ //boom entangled squares. not working yet{
-      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
-        square.classList.add('entdoom');
-      }else{
-        square.classList.add('entboom');
-      }
-      playMusic("./assets/sounds/boom.wav");
-      console.log("entangled found");
-      shipCount(square);
-      for(let i=0; i<entangleMax; i++){
-        if(square.classList.contains(i)){
-          tempIndex = i;
-          //console.log("going to boom for p2: ", tempIndex);
-          boomEntangledPair(tempIndex,'p1');
-          break;
-        }
-      }
-    }
-    else if(square.classList.contains('taken')) { 
+
+    if(square.classList.contains('taken') && !(square.classList.contains('entangled')) && !(square.classList.contains('dentangled'))) { 
       if(square.classList.contains('submarine') || square.classList.contains('battleship')){
         square.classList.add('doom');
       }else{
@@ -903,6 +896,72 @@ function setup(client, room, shared, my, participants, qdata) {
       }
 
     }
+
+    if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p1'){ //boom entangled squares. not working yet{
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        //square.className = '';
+        square.classList.remove('doom');
+        square.classList.add('entdoom');
+      }else{
+        //square.className = '';
+        square.classList.remove('boom');
+        square.classList.add('entboom');
+      }
+      playMusic("./assets/sounds/boom.wav");
+      console.log("entangled found");
+      shipCount(square);
+      // for(let i=0; i<entangleMax; i++){
+      //   if(square.classList.contains(i)){
+      //     tempIndex = i;
+      //     //console.log("going to boom for p1: ", tempIndex);
+      //     boomEntangledPair(tempIndex,'p2');
+      //     break;
+      //   }
+      // }
+      p2Squares.forEach((sq, index) => {
+        if(square.classList.contains('0')){
+          if(sq.classList.contains('0')){
+            shared.p2SquareStates[index] = true;
+          }
+        }else if(square.classList.contains('1')){
+          if(sq.classList.contains('1')){
+            shared.p2SquareStates[index] = true;
+          }
+        }
+      });
+    }else if ((square.classList.contains('entangled') || square.classList.contains('dentangled')) && turnState=='p2'){ //boom entangled squares. not working yet{
+      if(square.classList.contains('submarine') || square.classList.contains('battleship')){
+        //square.className = '';
+        square.classList.remove('doom');
+        square.classList.add('entdoom');
+      }else{
+        //square.className = '';
+        square.classList.remove('boom');
+        square.classList.add('entboom');
+      }
+      playMusic("./assets/sounds/boom.wav");
+      console.log("entangled found");
+      shipCount(square);
+      // for(let i=0; i<entangleMax; i++){
+      //   if(square.classList.contains(i)){
+      //     tempIndex = i;
+      //     //console.log("going to boom for p2: ", tempIndex);
+      //     boomEntangledPair(tempIndex,'p1');
+      //     break;
+      //   }
+      // }
+      p1Squares.forEach((sq, index) => {
+        if(square.classList.contains('0')){
+          if(sq.classList.contains('0')){
+            shared.p1SquareStates[index] = true;
+          }
+        }else if(square.classList.contains('1')){
+          if(sq.classList.contains('1')){
+            shared.p1SquareStates[index] = true;
+          }
+        }
+      });
+    }
     // checkForWins();
     // playGame();
   }
@@ -924,42 +983,58 @@ function setup(client, room, shared, my, participants, qdata) {
   function checkHitOrMiss(){
     shared.p1SquareStates.forEach((state, index) => {
       if(state == true){
-        if(p1Squares[index].classList.contains('taken')){
+        if(p1Squares[index].classList.contains('entangled') || p1Squares[index].classList.contains('dentangled')){
           if(p1Squares[index].classList.contains('submarine') || p1Squares[index].classList.contains('battleship')){
-            p1Squares[index].classList.add('doom');
-          }else{
-            p1Squares[index].classList.add('boom');
+            p1Squares[index].classList.add('entdoom');
+          }else if(p1Squares[index].classList.contains('destroyer') || p1Squares[index].classList.contains('cruiser') || p1Squares[index].classList.contains('carrier')){
+            p1Squares[index].classList.add('entboom');
           }
-        }else {
-          if(p1Squares[index].classList.contains('land')){
+        }else{
+          if(p1Squares[index].classList.contains('taken')){
+            if(p1Squares[index].classList.contains('submarine') || p1Squares[index].classList.contains('battleship')){
+              p1Squares[index].classList.add('doom');
+            }else{
+              p1Squares[index].classList.add('boom');
+            }
+          }else if(p1Squares[index].classList.contains('land')){
             p1Squares[index].classList.remove('land');
             p1Squares[index].classList.add('greenmiss');
           }else if(p1Squares[index].classList.contains('waste')){
             p1Squares[index].classList.remove('waste');
             p1Squares[index].classList.add('pinkmiss');
           }
+          
         }
+        
         state = false;
       }
     });
 
     shared.p2SquareStates.forEach((state, index) => {
       if(state == true){
-        if(p2Squares[index].classList.contains('taken')){
+        if(p2Squares[index].classList.contains('entangled') || p2Squares[index].classList.contains('dentangled')){
           if(p2Squares[index].classList.contains('submarine') || p2Squares[index].classList.contains('battleship')){
-            p2Squares[index].classList.add('doom');
-          }else{
-            p2Squares[index].classList.add('boom');
+            p2Squares[index].classList.add('entdoom');
+          }else if(p2Squares[index].classList.contains('destroyer') || p2Squares[index].classList.contains('cruiser') || p2Squares[index].classList.contains('carrier')){
+            p2Squares[index].classList.add('entboom');
           }
         }else{
-          if(p2Squares[index].classList.contains('land')){
+          if(p2Squares[index].classList.contains('taken')){
+            if(p2Squares[index].classList.contains('submarine') || p2Squares[index].classList.contains('battleship')){
+              p2Squares[index].classList.add('doom');
+            }else{
+              p2Squares[index].classList.add('boom');
+            }
+          }else if(p2Squares[index].classList.contains('land')){
             p2Squares[index].classList.remove('land');
             p2Squares[index].classList.add('greenmiss');
           }else if(p2Squares[index].classList.contains('waste')){
             p2Squares[index].classList.remove('waste');
             p2Squares[index].classList.add('pinkmiss');
           }
+
         }
+        
         state = false;
       }
     });
@@ -978,8 +1053,11 @@ function setup(client, room, shared, my, participants, qdata) {
   let entangleMax=2;
   let paired=false;
   let i=0;
-  for(let i=0;i<entangleMax;i++){
-    shared.entangledPoints.push(false)
+  for(let i=0;i<entangleMax*2;i++){
+    shared.entangledPoints[0].push(false)
+  }
+  for(let i=0;i<entangleMax*2;i++){
+    shared.entangledPoints[1].push(false)
   }
   function checkEntanglePossible(){
     let entanglePossible= true;
@@ -1009,10 +1087,12 @@ function setup(client, room, shared, my, participants, qdata) {
       chooseEntanglePoints();
     }, 500);
   }
+
   function chooseEntanglePoints(){
     p1Squares.forEach(square => square.addEventListener('dblclick', function(e){
       //console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && !square.classList.contains('dentangled') && entangleCount<entangleMax) {
+        shared.entangledPos[0].push($(square).attr("data-id"));
         playMusic("./assets/sounds/entPlaced.wav");
         if(square.classList.contains('submarine') || square.classList.contains('battleship')){
           square.classList.add('dentangled');
@@ -1034,6 +1114,7 @@ function setup(client, room, shared, my, participants, qdata) {
     p2Squares.forEach(square => square.addEventListener('dblclick', function(e){
       //console.log(shared.entangledPoints);
       if (square.classList.contains('taken') && !square.classList.contains('entangled') && !square.classList.contains('dentangled') && entangleCount<entangleMax) {
+        shared.entangledPos[1].push($(square).attr("data-id"));
         playMusic("./assets/sounds/entPlaced.wav");
         if(square.classList.contains('submarine') || square.classList.contains('battleship')){
           square.classList.add('dentangled');
@@ -1053,6 +1134,7 @@ function setup(client, room, shared, my, participants, qdata) {
     }));
     
   }
+
   function assignEntanglePair1(index){
     paired=false;
     randomPoint= Math.floor(Math.random() * (width*width));
@@ -1063,6 +1145,7 @@ function setup(client, room, shared, my, participants, qdata) {
       }else{
         p2Squares[randomPoint].classList.add('entangled');
       }
+      shared.entangledPos[1].push($(p2Squares[randomPoint]).attr("data-id"));
       p2Squares[randomPoint].classList.add(index);
       console.log("assigned random for entCount", index);
       paired=true;
@@ -1072,6 +1155,7 @@ function setup(client, room, shared, my, participants, qdata) {
         randomPoint= Math.floor(Math.random() * (width*width));
     }
   }
+
   function assignEntanglePair2(index){
     paired=false;
     randomPoint= Math.floor(Math.random() * (width*width));
@@ -1082,6 +1166,7 @@ function setup(client, room, shared, my, participants, qdata) {
         }else{
           p1Squares[randomPoint].classList.add('entangled');
         }
+        shared.entangledPos[0].push($(p1Squares[randomPoint]).attr("data-id"));
         p1Squares[randomPoint].classList.add(index);
         //console.log("assigned random for entCount", index);
         paired=true;
@@ -1091,29 +1176,31 @@ function setup(client, room, shared, my, participants, qdata) {
         randomPoint= Math.floor(Math.random() * (width*width));
     }
   }
-  function boomEntangledPair(i,p){
+
+  function boomEntangledPair(i , p){
     //console.log("booming thing with class", i, "for player ", p);
     if(p=='p2'){
-      p2Squares.forEach(p2sqr => {
+      p2Squares.forEach((p2sqr, index) => {
         if(p2sqr.classList.contains(i)){
-          if(p2sqr.classList.contains('submarine') || p2sqr.classList.contains('battleship')){
-            p2sqr.classList.add('doom');
-          }else{
-            p2sqr.classList.add('boom');
-          }
+          // if(p2sqr.classList.contains('submarine') || p2sqr.classList.contains('battleship')){
+          //   p2sqr.classList.add('entdoom');
+          // }else if(p2sqr.classList.contains('destroyer') || p2sqr.classList.contains('cruiser') || p2sqr.classList.contains('carrier')){
+          //   p2sqr.classList.add('entboom');
+          // }
+          shared.p2SquareStates[index] = true;
           playMusic("./assets/sounds/boom.wav");
           shipCount(p2sqr);
         }
       })
-    }
-    else{
-      p1Squares.forEach(p1sqr => {
+    }else{
+      p1Squares.forEach((p1sqr, index) => {
         if(p1sqr.classList.contains(i)){
-          if(p1sqr.classList.contains('submarine') || p1sqr.classList.contains('battleship')){
-            p1sqr.classList.add('doom');
-          }else{
-            p1sqr.classList.add('boom');
-          }
+          // if(p1sqr.classList.contains('submarine') || p1sqr.classList.contains('battleship')){
+          //   p1sqr.classList.add('entdoom');
+          // }else if(p1sqr.classList.contains('destroyer') || p1sqr.classList.contains('cruiser') || p1sqr.classList.contains('carrier')){
+          //   p1sqr.classList.add('entboom');
+          // }
+          shared.p1SquareStates[index] = true;
           playMusic("./assets/sounds/boom.wav");
           shipCount(p1sqr);
         }
@@ -1144,6 +1231,16 @@ function setup(client, room, shared, my, participants, qdata) {
   //check if everyone is ready to start playing
   function startCheck(){
     if(shared.startCount>=2){
+      console.log(shared.entangledPoints, shared.entangledPos); 
+      if(room.getHostName() === client.getUid()){
+        syncEnts(shared.entangledPos[0]);
+        syncEnts(shared.entangledPos[1]);
+      }else if(!(room.getHostName() === client.getUid())){
+        syncEnts(shared.entangledPos[0]);
+        syncEnts(shared.entangledPos[1]);
+      }
+
+
       entangleButton.removeEventListener('click', entangleBegin);
       rotateButton.style.display="none"; //remove button from view
       entangleButton.style.display="none"; //remove button from view
@@ -1153,16 +1250,18 @@ function setup(client, room, shared, my, participants, qdata) {
       displayGrid2.style.opacity = 0; //can't see see ship container
       displayGrid1.style.opacity = 0; //can't see ship container
 
+
       gameInfo.style.top = "85%"; gameInfo.style.left=0; gameInfo.style.border='0px';
     
       setInterval(()=> {
         playGame();
         checkForWins();
         turnGridDisplay();
-      }, 100);
+      }, 500);
+    }else if (shared.startCount==1){
+      infoDisplay.innerHTML = 'Waiting for a player to start game';
     }
-    else if (shared.startCount==1)
-      infoDisplay.innerHTML = 'Waiting for a player to start game'; 
+      
   }
   //Game Logic
   function playGame() {

@@ -448,14 +448,14 @@ h1 {
 }
 
 .entboom {
-  z-index: 3;
+  z-index: 5;
   /* background-color: red; */
   background-image: url(./assets/ground/greenentsquish.png);
   object-fit: contain;
 }
 
 .entdoom {
-  z-index: 3;
+  z-index: 5;
   /* background-color: red; */
   background-image: url(./assets/toxic/pinkentsquish.png);
   object-fit: contain;
