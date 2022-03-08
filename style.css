@@ -446,7 +446,10 @@ h1 {
   background-image: url(./assets/toxic/pinkent.png);
   object-fit: contain;
 }
-
+.hide {
+  background-image: url(./assets/unclicked.png);
+  object-fit: contain;
+}
 .entboom {
   z-index: 5;
   /* background-color: red; */
@@ -458,11 +461,6 @@ h1 {
   z-index: 5;
   /* background-color: red; */
   background-image: url(./assets/toxic/pinkentsquish.png);
-  object-fit: contain;
-}
-
-.hide {
-  background-image: url(./assets/unclicked.png);
   object-fit: contain;
 }
 .boom {
