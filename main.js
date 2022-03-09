@@ -1,4 +1,7 @@
 function setup(client, room, shared, my, participants, qdata) {
+  const waitScreen = document.querySelector('#waitScreen'); //game grid for p1
+  const gameScreen = document.querySelector('#gameScreen'); //game grid for p2
+
   const p1Grid = document.querySelector('.grid-p1'); //game grid for p1
   const p2Grid = document.querySelector('.grid-p2'); //game grid for p2
 
@@ -44,16 +47,23 @@ function setup(client, room, shared, my, participants, qdata) {
     console.log('you not host');
   }
 
-  //Q1: IS THIS JUST A CHECK?
   let participNum = 0;
   setInterval(() => {
     participNum = 0;
     participants.forEach(()=>{
-      participNum++;
-      //console.log("participant number: ", participNum);
-    });
+      participNum++; 
+    }); checkParticipCount();
   }, 1000);
-
+  function checkParticipCount(){
+    if(participNum<2){
+      waitScreen.style.display="block";
+      gameScreen.style.display="none"
+    }
+    else{
+      gameScreen.style.display="block";
+      waitScreen.style.display="none"
+    }
+    }
   const startButton = document.querySelector('#start');
   const entangleButton = document.querySelector('#entangle');
   const rotateButton = document.querySelector('#rotate');
@@ -792,6 +802,7 @@ function setup(client, room, shared, my, participants, qdata) {
     checkP2ShipsPlaced();
     displaySquare();
     checkHitOrMiss();
+    checkForWins();
   }, 500);
 
   function checkP1ShipsPlaced() {
@@ -878,7 +889,7 @@ function setup(client, room, shared, my, participants, qdata) {
       }else{
         square.classList.add('boom');
       }
-      playMusic("./assets/sounds/boom.wav");
+      playMusic("./assets/sounds/catBoom.wav");
       shipCount(square);
       if(turnState == 'p2') {
         shared.p2SquareStates[index] = true;
@@ -907,7 +918,7 @@ function setup(client, room, shared, my, participants, qdata) {
         square.classList.remove('boom');
         square.classList.add('entboom');
       }
-      playMusic("./assets/sounds/boom.wav");
+      playMusic("./assets/sounds/entMine.wav");
       console.log("entangled found");
       shipCount(square);
       // for(let i=0; i<entangleMax; i++){
@@ -939,7 +950,7 @@ function setup(client, room, shared, my, participants, qdata) {
         square.classList.remove('boom');
         square.classList.add('entboom');
       }
-      playMusic("./assets/sounds/boom.wav");
+      playMusic("./assets/sounds/entMine.wav");
       console.log("entangled found");
       shipCount(square);
       // for(let i=0; i<entangleMax; i++){
@@ -964,6 +975,14 @@ function setup(client, room, shared, my, participants, qdata) {
     }
     // checkForWins();
     // playGame();
+  }
+  const buttonList = document.querySelectorAll("button")
+  for(let i=0;i<buttonList.length;i++){
+    buttonList[i].addEventListener('click', buttonMusic );
+  }
+  function buttonMusic() {
+    new Audio("./assets/sounds/buttonEdited.wav").play()
+    return;
   }
   function playMusic(url) {
     new Audio(url).play()
@@ -1188,7 +1207,7 @@ function setup(client, room, shared, my, participants, qdata) {
           //   p2sqr.classList.add('entboom');
           // }
           shared.p2SquareStates[index] = true;
-          playMusic("./assets/sounds/boom.wav");
+          playMusic("./assets/sounds/entCat.wav");
           shipCount(p2sqr);
         }
       })
@@ -1201,7 +1220,7 @@ function setup(client, room, shared, my, participants, qdata) {
           //   p1sqr.classList.add('entboom');
           // }
           shared.p1SquareStates[index] = true;
-          playMusic("./assets/sounds/boom.wav");
+          playMusic("./assets/sounds/entCat.wav");
           shipCount(p1sqr);
         }
       })
@@ -1221,9 +1240,9 @@ function setup(client, room, shared, my, participants, qdata) {
   let turnState = 'p1';
   function begin(){
     shared.startCount++;
+    startButton.style.display="none"; //remove button from view
     if(shared.entangledCount>=(entangleMax*2)){
-      startCheck();
-      
+        startCheck();
     }
     else
       infoDisplay.innerHTML = 'Waiting for both players to entangle ' + entangleMax + ' squares each'; 
@@ -1231,7 +1250,14 @@ function setup(client, room, shared, my, participants, qdata) {
   //check if everyone is ready to start playing
   function startCheck(){
     if(shared.startCount>=2){
-      console.log(shared.entangledPoints, shared.entangledPos); 
+      gameSetup();
+    }else if (shared.startCount==1){
+      infoDisplay.innerHTML = 'Waiting for a player to start game';
+    }
+      
+  }
+  function gameSetup(){
+    console.log(shared.entangledPoints, shared.entangledPos); 
       if(room.getHostName() === client.getUid()){
         syncEnts(shared.entangledPos[0]);
         syncEnts(shared.entangledPos[1]);
@@ -1254,14 +1280,11 @@ function setup(client, room, shared, my, participants, qdata) {
       gameInfo.style.top = "85%"; gameInfo.style.left=0; gameInfo.style.border='0px';
     
       setInterval(()=> {
+        startCheck();
         playGame();
         checkForWins();
         turnGridDisplay();
       }, 500);
-    }else if (shared.startCount==1){
-      infoDisplay.innerHTML = 'Waiting for a player to start game';
-    }
-      
   }
   //Game Logic
   function playGame() {
@@ -1327,10 +1350,11 @@ function revealSqChecked(sq,i,player,playNum){
 /////////////////////////////////////////////////////////////////////// END GAME CHECKS + WIN SCREEN
 
 
-
-
-
-
+  const winScreenDisp = document.querySelector('#winner');
+  const loseScreenDisp = document.querySelector('#loser');
+  winScreenDisp.style.display="none";
+  loseScreenDisp.style.display="none";
+  let pCheck=50;
   function shipCount(square){
     if (turnState=='p1') { //counts number of p1 ships that have been destroyed
       if (square.classList.contains('destroyer')) p1DestroyerCount++;
@@ -1391,11 +1415,21 @@ function revealSqChecked(sq,i,player,playNum){
     if ((p1DestroyerCount + p1SubmarineCount + p1CruiserCount + p1BattleshipCount + p1CarrierCount) === 50) {
       infoDisplay.innerHTML = "PLAYER 1 WINS";
       console.log( "PLAYER 1 WINS");
+      if(room.getHostName() === client.getUid()){
+        winScreenDisp.style.display="block";
+      }
+      else
+        loseScreenDisp.style.display="block";
       gameOver()
     }
     if ((p2DestroyerCount + p2SubmarineCount + p2CruiserCount + p2BattleshipCount + p2CarrierCount) === 50) {
       infoDisplay.innerHTML = "PLAYER 2 WINS";
       console.log( "PLAYER 2 WINS");
+      if(room.getHostName() != client.getUid()){
+        winScreenDisp.style.display="block";
+      }
+      else
+      loseScreenDisp.style.display="block";
       gameOver()
     }
   }
@@ -1403,7 +1437,6 @@ function revealSqChecked(sq,i,player,playNum){
   isGameOver = true;
   startButton.removeEventListener('click', begin);
   }
-
 
 
 

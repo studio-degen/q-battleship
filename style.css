@@ -7,7 +7,7 @@
   --cyan: #00ffff;
   --leftMargin: 60px;
   --gridCellSize: 40px;
-  --instructSize: 50vh;
+  --instructSize: 80vh;
 }
 @font-face {
   font-family: "retro_gamingregular";
@@ -456,7 +456,6 @@ h1 {
   background-image: url(./assets/ground/greenentsquish.png);
   object-fit: contain;
 }
-
 .entdoom {
   z-index: 5;
   /* background-color: red; */
@@ -486,21 +485,40 @@ h1 {
   background-image: url(./assets/toxic/pinkmiss.png);
   object-fit: contain;
 }
-/* #introScreen {
-  background-color: var(--cyan);
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
+#winner {
+  width: 40vw;
+  height: 40vh;
+  background-image: url(./assets/winner.png);
+  background-size: 40vw 40vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-#gameScreen {
-  background-color: var(--bgLightPink);
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
+#loser {
+  width: 40vw;
+  height: 40vh;
+  background-image: url(./assets/loser.png);
+  background-size: 40vw 40vh;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-#winScreen {
-  background-color: var(--bgLightGreen);
-  z-index: 10;
-  width: 100vw;
-  height: 100vh;
-} */
+#waitScreen p {
+  position: fixed;
+  font-size: 20px;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+#participant {
+  width: 40vw;
+  height: 40vw;
+  background-image: url(./assets/participants.png);
+  background-size: 40vw 40vw;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
