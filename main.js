@@ -37,14 +37,14 @@ function setup(client, room, shared, my, participants, qdata) {
     gameInfo.style.right="100px"; 
     gameInfo.style.top="120px";
     p2Grid.style.opacity = 0; //can't see opponents grid
-    console.log('you host')
+    //console.log('you host')
   }else{ //checks whether you are player 2
     displayGrid1.style.opacity = 0; //can't see/move opponents ships
     displayGrid1.style.display = "none"; 
     gameInfo.style.top="120px";
     gameInfo.style.left="100px"; 
     p1Grid.style.opacity = 0; //can't see opponents grid
-    console.log('you not host');
+    //console.log('you not host');
   }
 
   let participNum = 0;
@@ -780,7 +780,7 @@ function setup(client, room, shared, my, participants, qdata) {
       entPlaces.push(place);
     }           
     
-    console.log(entPlaces);
+    //console.log(entPlaces);
     for (let p = 0; p < entPlaces.length; p++) {
       if(entPlaces[p].classList.contains('submarine') || entPlaces[p].classList.contains('battleship')){
         entPlaces[p].classList.add('dentangled'); 
@@ -919,7 +919,7 @@ function setup(client, room, shared, my, participants, qdata) {
         square.classList.add('entboom');
       }
       playMusic("./assets/sounds/entMine.wav");
-      console.log("entangled found");
+      //console.log("entangled found");
       shipCount(square);
       // for(let i=0; i<entangleMax; i++){
       //   if(square.classList.contains(i)){
@@ -951,7 +951,7 @@ function setup(client, room, shared, my, participants, qdata) {
         square.classList.add('entboom');
       }
       playMusic("./assets/sounds/entMine.wav");
-      console.log("entangled found");
+      //console.log("entangled found");
       shipCount(square);
       // for(let i=0; i<entangleMax; i++){
       //   if(square.classList.contains(i)){
@@ -1166,7 +1166,7 @@ function setup(client, room, shared, my, participants, qdata) {
       }
       shared.entangledPos[1].push($(p2Squares[randomPoint]).attr("data-id"));
       p2Squares[randomPoint].classList.add(index);
-      console.log("assigned random for entCount", index);
+      //console.log("assigned random for entCount", index);
       paired=true;
       break;
       }
@@ -1249,15 +1249,19 @@ function setup(client, room, shared, my, participants, qdata) {
   }
   //check if everyone is ready to start playing
   function startCheck(){
+    //console.log("startCheck now")
     if(shared.startCount>=2){
       gameSetup();
     }else if (shared.startCount==1){
       infoDisplay.innerHTML = 'Waiting for a player to start game';
+      setInterval(()=> {
+        startCheck();
+      }, 500);
     }
       
   }
   function gameSetup(){
-    console.log(shared.entangledPoints, shared.entangledPos); 
+    //console.log(shared.entangledPoints, shared.entangledPos); 
       if(room.getHostName() === client.getUid()){
         syncEnts(shared.entangledPos[0]);
         syncEnts(shared.entangledPos[1]);
@@ -1280,7 +1284,6 @@ function setup(client, room, shared, my, participants, qdata) {
       gameInfo.style.top = "85%"; gameInfo.style.left=0; gameInfo.style.border='0px';
     
       setInterval(()=> {
-        startCheck();
         playGame();
         checkForWins();
         turnGridDisplay();
@@ -1301,8 +1304,8 @@ function setup(client, room, shared, my, participants, qdata) {
 
 
 
-
 /////////////////////////////////////////////////////////////////////// ENFORCE TURNS
+
 
 
 
@@ -1448,6 +1451,8 @@ function revealSqChecked(sq,i,player,playNum){
 
 
 
+
+
   const pageKey = document.querySelector('.key'); //key
   const pageKeyContent = document.querySelector('.keyContent'); //key content
   const pageInstruct = document.querySelector('.instruct'); //instruction
@@ -1470,7 +1475,7 @@ function revealSqChecked(sq,i,player,playNum){
   let imgLen = img.length;
   
   function checkKey(){
-    console.log(toggleKey)
+    //console.log(toggleKey)
     if(toggleKey==false){
       pageKeyContent.style.opacity="100%";
       pageKeyContent.style.display="block";
@@ -1483,7 +1488,7 @@ function revealSqChecked(sq,i,player,playNum){
   }
 
   function checkInstruct(){
-    console.log("clicked Instruct")
+    //console.log("clicked Instruct")
     if(toggleInstruct==false){
       pageInstructContent.style.opacity="100%";
       pageInstructContent.style.display="block";
