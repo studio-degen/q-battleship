@@ -1126,7 +1126,7 @@ function setup(client, room, shared, my, participants, qdata) {
       }else if(entangleCount>=entangleMax){
         infoDisplay.innerHTML ="You can't entangle any more, don't be greedy";
       }else if(!square.classList.contains('taken')){
-        infoDisplay.innerHTML ="You're trying to entangle the sea";
+        infoDisplay.innerHTML ="You're trying to entangle the land";
       }
     }));
 
