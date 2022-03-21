@@ -803,7 +803,7 @@ function setup(client, room, shared, my, participants, qdata) {
     displaySquare();
     checkHitOrMiss();
     checkForWins();
-  }, 500);
+  }, 1000/30);
 
   function checkP1ShipsPlaced() {
     if(!(room.getHostName() === client.getUid())){
@@ -1104,7 +1104,7 @@ function setup(client, room, shared, my, participants, qdata) {
     startButton.style.position="relative"; ; //show button in view
     setInterval(()=> {
       chooseEntanglePoints();
-    }, 500);
+    }, 200);
   }
 
   function chooseEntanglePoints(){
@@ -1256,7 +1256,7 @@ function setup(client, room, shared, my, participants, qdata) {
       infoDisplay.innerHTML = 'Waiting for a player to start game';
       setInterval(()=> {
         startCheck();
-      }, 500);
+      }, 200);
     }
       
   }
@@ -1287,7 +1287,7 @@ function setup(client, room, shared, my, participants, qdata) {
         playGame();
         checkForWins();
         turnGridDisplay();
-      }, 500);
+      }, 1000/30);
   }
   //Game Logic
   function playGame() {
