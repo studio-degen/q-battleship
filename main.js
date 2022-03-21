@@ -1240,7 +1240,7 @@ function setup(client, room, shared, my, participants, qdata) {
   let turnState = 'p1';
   function begin(){
     shared.startCount++;
-    startButton.style.display="none"; //remove button from view
+   // startButton.style.display="none"; //remove button from view
     if(shared.entangledCount>=(entangleMax*2)){
         startCheck();
     }
