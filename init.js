@@ -1,63 +1,63 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  let shared, my, participants;
+  let client, room;
 
-    let shared, my, participants;
-    let client, room;
+  async function init() {
+    //create a new client and connect to server
+    client = new party.Client("wss://deepstream-server-1.herokuapp.com");
+    await client.whenReady();
 
-    async function init() {
-      //create a new client and connect to server
-        client = new party.Client("wss://deepstream-server-1.herokuapp.com");
-        await client.whenReady();
-    
-        //create a room
-        room = new party.Room(client, "bs.tm.13", "main");
-        await room.whenReady();
-    
-        //join the room and remove any clients who are no longer present
-        room.join();
-        room.removeDisconnectedClients();
-    
-        //create a record that will be used for transporting data between users
-        const record = room.getRecord("test");
-        await record.whenReady();
-        //console.log(record.shared);
-    
-        //get the shared object from the record
-        shared = record.getShared();
-        participants = room.getParticipantShareds();
-        //shared.log = [];
-        //console.log(room.getHostName() === client.getUid());
-    
-        const myrecord = room.getMyRecord();
-        await myrecord.whenReady();
-    
-        my = myrecord.getShared();
-    
-        participants = room.getParticipantShareds();
-    
-        //console.log(participants)
-    
-    
-        //clean up on exit
-        window.addEventListener("beforeunload", () => {
-            shared.log = [];
-            room.leave();
-            client.close();
-        });
+    //create a room
+    room = new party.Room(client, "bs.tm.13", "main");
+    await room.whenReady();
 
-        if(room.getHostName() === client.getUid()) {
-            shared.randomIndex = Math.floor(Math.random() * 10) + 1;
-        }
+    //join the room and remove any clients who are no longer present
+    room.join();
+    room.removeDisconnectedClients();
 
-        //console.log("./q-data/bell-0" + `${randomIndex}.json`);
+    //create a record that will be used for transporting data between users
+    const record = room.getRecord("test");
+    await record.whenReady();
+    //console.log(record.shared);
 
-        $.getJSON( "./q-data/bell-00" + `${shared.randomIndex}.json`, function( json ) {
-            //console.log(json.shots);
-            setup(client, room, shared, my, participants, json);
-        });
-    
-        //record.watchShared(onChange);
+    //get the shared object from the record
+    shared = record.getShared();
+    participants = room.getParticipantShareds();
+    //shared.log = [];
+    //console.log(room.getHostName() === client.getUid());
+
+    const myrecord = room.getMyRecord();
+    await myrecord.whenReady();
+
+    my = myrecord.getShared();
+
+    participants = room.getParticipantShareds();
+
+    //console.log(participants)
+
+    //clean up on exit
+    window.addEventListener("beforeunload", () => {
+      shared.log = [];
+      room.leave();
+      client.close();
+    });
+
+    if (room.getHostName() === client.getUid()) {
+      shared.randomIndex = Math.floor(Math.random() * 10) + 1;
     }
-    
-    init();
 
+    //console.log("./q-data/bell-0" + `${randomIndex}.json`);
+
+    $.getJSON(
+      "./q-data/bell-00" + `${shared.randomIndex}.json`,
+      function (json) {
+        //console.log(json.shots);
+        setup(client, room, shared, my, participants, json);
+      }
+    );
+
+    //record.watchShared(onChange);
+  }
+
+  init();
 });
